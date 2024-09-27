@@ -1,4 +1,6 @@
 export default {
+  branches: ["main"],
+  extends: "semantic-release-monorepo",
   plugins: [
     [
       "@semantic-release/commit-analyzer",
