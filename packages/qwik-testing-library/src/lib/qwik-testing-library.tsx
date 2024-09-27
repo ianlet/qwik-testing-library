@@ -1,7 +1,6 @@
 import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
-import type { JSXOutput } from "@builder.io/qwik";
+import { JSXOutput } from "@builder.io/qwik";
 import type { ComponentRef, Options, Result } from "./types";
-import { getTestPlatform } from "./platform";
 import { qwikLoader } from "./qwikloader";
 
 const mountedContainers = new Set<ComponentRef>();
@@ -9,11 +8,11 @@ const mountedContainers = new Set<ComponentRef>();
 async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
   const qwik = await import("@builder.io/qwik");
 
-  let { container, baseElement = container } = options;
+  let { container, baseElement = container, wrapper: Wrapper } = options;
   const { queries, serverData } = options;
 
   if (!baseElement) {
-    // Default to document.body instead of documentElement to avoid output of potentially-large
+    // Default to document.body instead of documentElement to avoid output of potentially large
     // head elements (such as JSS style blocks) in debug output.
     baseElement = document.body;
   }
@@ -25,8 +24,9 @@ async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
     );
   }
 
-  // TODO: Add support for wrapper
-  const { cleanup } = await qwik.render(container, ui, { serverData });
+  const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
+
+  const { cleanup } = await qwik.render(container, wrappedUi, { serverData });
 
   qwikLoader(baseElement.ownerDocument);
 

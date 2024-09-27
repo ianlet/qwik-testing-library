@@ -1,17 +1,16 @@
-import { JSX } from "@builder.io/qwik/jsx-runtime";
 import type {
   BoundFunctions,
   prettyFormat,
   Queries,
 } from "@testing-library/dom";
 import { queries } from "@testing-library/dom";
-import type { Component, CorePlatform, RenderOptions } from "@builder.io/qwik";
+import type { Component, RenderOptions } from "@builder.io/qwik";
 
 export interface Options extends RenderOptions {
   container?: HTMLElement;
   baseElement?: HTMLElement;
   queries?: Queries & typeof queries;
-  wrapper?: Component<{ children: JSX.Element }>;
+  wrapper?: Component;
 }
 
 export type DebugFn = (
