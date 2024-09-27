@@ -91,13 +91,14 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [Installation](#installation)
 - [Setup](#setup)
 - [Examples](#examples)
-    - [Qwikstart](#qwikstart)
-- [Issues](#issues)
-    - [🐛 Bugs](#-bugs)
-    - [💡 Feature Requests](#-feature-requests)
-    - [❓ Questions](#-questions)
-- [Contributors](#contributors)
+  - [Qwikstart](#qwikstart)
 - [Gotchas](#gotchas)
+- [Issues](#issues)
+  - [🐛 Bugs](#-bugs)
+  - [💡 Feature Requests](#-feature-requests)
+  - [❓ Questions](#-questions)
+- [Contributors](#contributors)
+- [Acknowledgements](#acknowledgements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -243,6 +244,10 @@ describe("<Counter />", () => {
 })
 ```
 
+## Gotchas
+
+* Watch mode (at least in Webstorm) doesn't seem to work well: components are not being updated with your latest changes
+
 ## Issues
 
 _Looking to contribute? Look for the [Good First Issue][good-first-issue]
@@ -312,6 +317,16 @@ Contributions of any kind welcome!
 
 [all-contributors]: https://github.com/all-contributors/all-contributors
 
-## Gotchas
+## Acknowledgements
 
-* Watch mode (at least in Webstorm) doesn't seem to work well: components are not being updated with your latest changes
+Massive thanks to the [Qwik Team][qwik-team] and the whole community for their efforts to build Qwik and for
+the [inspiration][qwik-baseline] on how to create a testing library for Qwik.
+
+Thanks to the [Testing Library Team][tl-team] for a great set of tools to build better products, confidently, and
+qwikly.
+
+[qwik-team]: https://github.com/QwikDev/qwik/
+
+[qwik-baseline]: https://github.com/QwikDev/qwik/tree/main/packages/qwik/src/testing
+
+[tl-team]: https://testing-library.com
