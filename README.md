@@ -41,9 +41,9 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 [build]: https://github.com/ianlet/qwik-testing-library/actions
 
-[coverage-badge]: https://img.shields.io/codecov/c/github/g.svg?style=flat-square
+[coverage-badge]: https://img.shields.io/codecov/c/github/ianlet/qwik-testing-library.svg?style=flat-square
 
-[coverage]: https://codecov.io/github/g
+[coverage]: https://codecov.io/github/ianlet/qwik-testing-library
 
 [version-badge]: https://img.shields.io/npm/v/@noma.to/qwik-testing-library.svg?style=flat-square
 
@@ -53,7 +53,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 [downloads]: http://www.npmtrends.com/@noma.to/qwik-testing-library
 
-[license-badge]: https://img.shields.io/github/license/g?color=b&style=flat-square
+[license-badge]: https://img.shields.io/github/license/ianlet/qwik-testing-library?color=b&style=flat-square
 
 [license]: https://github.com/ianlet/qwik-testing-library/blob/main/LICENSE
 
@@ -69,17 +69,17 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 [discord]: https://qwik.dev/chat
 
-[github-watch-badge]: https://img.shields.io/github/watchers/g.svg?style=social
+[github-watch-badge]: https://img.shields.io/github/watchers/ianlet/qwik-testing-library.svg?style=social
 
 [github-watch]: https://github.com/ianlet/qwik-testing-library/watchers
 
-[github-star-badge]: https://img.shields.io/github/stars/g.svg?style=social
+[github-star-badge]: https://img.shields.io/github/stars/ianlet/qwik-testing-library.svg?style=social
 
 [github-star]: https://github.com/ianlet/qwik-testing-library/stargazers
 
 [twitter]: https://twitter.com/intent/tweet?text=Check%20out%20qwik-testing-library%20by%20%40@noma_hq%20https%3A%2F%2Fgithub.com%2Fianlet%2Fqwik-testing-library%20%F0%9F%91%8D
 
-[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/g.svg?style=social
+[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/ianlet/qwik-testing-library.svg?style=social
 
 ## Table of Contents
 
