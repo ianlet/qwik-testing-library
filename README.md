@@ -5,7 +5,7 @@
 height="80"
 width="80"
 alt="qwik-testing-library logo depicts a high voltage emoji"
-src="https://raw.githubusercontent.com/g/main/high-voltage.png"
+src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-voltage.png"
 />
 
 <p>Simple and complete Qwik testing utilities that encourage good testing practices.</p>
@@ -33,13 +33,13 @@ src="https://raw.githubusercontent.com/g/main/high-voltage.png"
 
 <hr />
 
-[qtl-docs]: https://github.com/g/blob/main/README.md#installation
+[qtl-docs]: https://github.com/ianlet/qwik-testing-library/blob/main/README.md#installation
 
-[qtl-docs-repo]: https://github.com/g/blob/main/README.md
+[qtl-docs-repo]: https://github.com/ianlet/qwik-testing-library/blob/main/README.md
 
-[build-badge]: https://img.shields.io/github/actions/workflow/status/g/release.yml?style=flat-square
+[build-badge]: https://img.shields.io/github/actions/workflow/status/ianlet/qwik-testing-library/release.yml?style=flat-square
 
-[build]: https://github.com/g/actions
+[build]: https://github.com/ianlet/qwik-testing-library/actions
 
 [coverage-badge]: https://img.shields.io/codecov/c/github/g.svg?style=flat-square
 
@@ -55,7 +55,7 @@ src="https://raw.githubusercontent.com/g/main/high-voltage.png"
 
 [license-badge]: https://img.shields.io/github/license/g?color=b&style=flat-square
 
-[license]: https://github.com/g/blob/main/LICENSE
+[license]: https://github.com/ianlet/qwik-testing-library/blob/main/LICENSE
 
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 
@@ -63,7 +63,7 @@ src="https://raw.githubusercontent.com/g/main/high-voltage.png"
 
 [coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
 
-[coc]: https://github.com/g/blob/main/CODE_OF_CONDUCT.md
+[coc]: https://github.com/ianlet/qwik-testing-library/blob/main/CODE_OF_CONDUCT.md
 
 [discord-badge]: https://img.shields.io/discord/723559267868737556.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square
 
@@ -71,11 +71,11 @@ src="https://raw.githubusercontent.com/g/main/high-voltage.png"
 
 [github-watch-badge]: https://img.shields.io/github/watchers/g.svg?style=social
 
-[github-watch]: https://github.com/g/watchers
+[github-watch]: https://github.com/ianlet/qwik-testing-library/watchers
 
 [github-star-badge]: https://img.shields.io/github/stars/g.svg?style=social
 
-[github-star]: https://github.com/g/stargazers
+[github-star]: https://github.com/ianlet/qwik-testing-library/stargazers
 
 [twitter]: https://twitter.com/intent/tweet?text=Check%20out%20qwik-testing-library%20by%20%40@noma_hq%20https%3A%2F%2Fgithub.com%2Fianlet%2Fqwik-testing-library%20%F0%9F%91%8D
 
@@ -173,7 +173,7 @@ See the [**docs**][qtl-docs] over at the Testing Library website.
 _Looking to contribute? Look for the [Good First Issue][good-first-issue]
 label._
 
-[good-first-issue]: https://github.com/g/issues?utf8=✓&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3A"good+first+issue"+
+[good-first-issue]: https://github.com/ianlet/qwik-testing-library/issues?utf8=✓&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3A"good+first+issue"+
 
 ### 🐛 Bugs
 
@@ -181,7 +181,7 @@ Please file an issue for bugs, missing documentation, or unexpected behavior.
 
 [**See Bugs**][bugs]
 
-[bugs]: https://github.com/g/issues?q=is%3Aissue+is%3Aopen+label%3Abug+sort%3Acreated-desc
+[bugs]: https://github.com/ianlet/qwik-testing-library/issues?q=is%3Aissue+is%3Aopen+label%3Abug+sort%3Acreated-desc
 
 ### 💡 Feature Requests
 
@@ -190,7 +190,7 @@ a 👍. This helps maintainers prioritize what to work on.
 
 [**See Feature Requests**][requests]
 
-[requests]: https://github.com/g/issues?q=is%3Aissue+sort%3Areactions-%2B1-desc+label%3Aenhancement+is%3Aopen
+[requests]: https://github.com/ianlet/qwik-testing-library/issues?q=is%3Aissue+sort%3Areactions-%2B1-desc+label%3Aenhancement+is%3Aopen
 
 ### ❓ Questions
 
