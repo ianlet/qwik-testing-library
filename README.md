@@ -91,11 +91,11 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [Installation](#installation)
 - [Setup](#setup)
 - [Examples](#examples)
-  - [Qwikstart](#qwikstart)
+    - [Qwikstart](#qwikstart)
 - [Issues](#issues)
-  - [🐛 Bugs](#-bugs)
-  - [💡 Feature Requests](#-feature-requests)
-  - [❓ Questions](#-questions)
+    - [🐛 Bugs](#-bugs)
+    - [💡 Feature Requests](#-feature-requests)
+    - [❓ Questions](#-questions)
 - [Contributors](#contributors)
 - [Gotchas](#gotchas)
 
@@ -128,7 +128,7 @@ should be installed as one of your project's `devDependencies`:
 npm install --save-dev @noma.to/qwik-testing-library
 ```
 
-This library supports `svelte` versions `3`, `4`, and `5`.
+This library supports `qwik` versions `1.7.2` and above.
 
 You may also be interested in installing `@testing-library/jest-dom` so you can
 use [the custom jest matchers][jest-dom].
