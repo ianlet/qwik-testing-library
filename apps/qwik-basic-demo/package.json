@@ -32,9 +32,8 @@
     "lint": "eslint \"src/**/*.ts*\"",
     "release": "np",
     "start": "vite --open --mode ssr",
-    "test": "echo \"No test specified\" && exit 0",
-    "test.unit": "vitest components",
-    "test.unit.ui": "vitest --ui components",
+    "test": "vitest run components",
+    "validate": "pnpm test",
     "qwik": "qwik"
   },
   "devDependencies": {

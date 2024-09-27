@@ -1,0 +1,29 @@
+{
+  "projectName": "qwik-testing-library",
+  "projectOwner": "ianlet",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "ianlet",
+      "name": "Ian Létourneau",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6018732?v=4",
+      "profile": "https://noma.to/",
+      "contributions": [
+        "code",
+        "test",
+        "ideas",
+        "doc",
+        "example"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": true
+}

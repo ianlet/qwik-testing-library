@@ -4,9 +4,40 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "toc": "doctoc README.md",
+    "test": "pnpm -r test",
+    "fmt": "pnpm -r fmt",
+    "validate": "pnpm --filter '{packages/qwik-testing-library}' run validate && pnpm --filter '{apps/qwik-basic-demo}' run validate",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate",
+    "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "testing",
+    "testing-library",
+    "qwik",
+    "ui",
+    "dom",
+    "jsdom",
+    "unit",
+    "integration",
+    "functional",
+    "end-to-end",
+    "e2e",
+    "vitest"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "all-contributors-cli": "^6.26.1",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "doctoc": "^2.2.1",
+    "husky": "^9.1.6",
+    "semantic-release": "^24.1.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }

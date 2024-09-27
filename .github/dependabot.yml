@@ -1,0 +1,41 @@
+version: 2
+updates:
+  # Update npm dependencies
+  - package-ecosystem: 'pnpm'
+    directory: '/'
+    schedule:
+      interval: 'monthly'
+    groups:
+      lint:
+        patterns:
+          - '*eslint*'
+          - '*prettier*'
+          - '*typescript*'
+      test:
+        patterns:
+          - '*qwik*'
+          - '*testing-library*'
+          - '*vite*'
+          - '*vitest*'
+          - '*jsdom*'
+          - '*happy-dom*'
+          - 'expect-type'
+      development:
+        dependency-type: 'development'
+    ignore:
+      - dependency-name: 'eslint'
+        versions: [ '>=9' ]
+      - dependency-name: 'eslint-plugin-n'
+        versions: [ '>=17' ]
+      - dependency-name: 'eslint-plugin-promise'
+        versions: [ '>=7' ]
+
+  # Update GitHub Actions dependencies
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'monthly'
+    groups:
+      actions:
+        patterns:
+          - '*'
