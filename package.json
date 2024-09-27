@@ -1,6 +1,5 @@
 {
   "name": "@noma.to/qwik-testing-library-root",
-  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
