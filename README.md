@@ -33,7 +33,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 <hr />
 
-[qtl-docs]: https://github.com/ianlet/qwik-testing-library#installation
+[qtl-docs]: #installation
 
 [qtl-docs-repo]: https://github.com/ianlet/qwik-testing-library/blob/main/README.md
 
@@ -85,17 +85,17 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 - [The Problem](#the-problem)
 - [This Solution](#this-solution)
 - [Installation](#installation)
 - [Setup](#setup)
-- [Docs](#docs)
+- [Examples](#examples)
+  - [Qwikstart](#qwikstart)
 - [Issues](#issues)
-    - [🐛 Bugs](#-bugs)
-    - [💡 Feature Requests](#-feature-requests)
-    - [❓ Questions](#-questions)
+  - [🐛 Bugs](#-bugs)
+  - [💡 Feature Requests](#-feature-requests)
+  - [❓ Questions](#-questions)
 - [Contributors](#contributors)
 - [Gotchas](#gotchas)
 
@@ -142,31 +142,106 @@ use [the custom jest matchers][jest-dom].
 ## Setup
 
 We recommend using `@noma.to/qwik-testing-library` with [Vitest][] as your test
-runner. To get started, add the `svelteTesting` plugin to your Vite or Vitest
-config.
+runner. To get started, configure how Vite will run your tests.
 
 ```diff
   // vite.config.js
-  import { svelte } from '@sveltejs/vite-plugin-svelte'
-+ import { svelteTesting } from '@noma.to/qwik-testing-library/vite'
 
   export default defineConfig({
-    plugins: [
-      svelte(),
-+     svelteTesting(),
-    ]
+    plugins: [qwikVite(), tsconfigPaths()],
++   test: {
++     environment: "jsdom",
++     setupFiles: ["./vitest.setup.ts"],
++     globals: true,
++   },
   });
 ```
 
-See the [setup docs][] for more detailed setup instructions.
+Then, create the `vitest.setup.ts` file:
+
+```ts
+// vitest.setup.ts
+
+import {afterEach} from "vitest";
+import "@testing-library/jest-dom/vitest";
+
+// This has to run before qdev.ts loads. `beforeAll` is too late
+globalThis.qTest = false; // Forces Qwik to run as if it was in a Browser
+globalThis.qRuntimeQrl = true;
+globalThis.qDev = true;
+globalThis.qInspector = false;
+
+afterEach(async () => {
+  const {cleanup} = await import("@noma.to/qwik-testing-library");
+  cleanup();
+});
+```
+
+This setup will make sure that Qwik is properly configured and that everything gets cleaned after each test.
+
+Additionally, it loads `@testing-library/jest-dom/vitest` in your test runner so you can use matchers like
+`expect(...).toBeInTheDocument()`.
+
+Finally, edit your `tsconfig.json` to declare the following global types:
+
+```diff
+// tsconfig.json
+
+{
+  "compilerOptions": {
+    "types": [
++     "vite/client",
++     "vitest/globals",
++     "@testing-library/jest-dom/vitest"
+    ]
+  },
+  "include": ["src"]
+}
+```
 
 [vitest]: https://vitest.dev/
 
-[setup docs]: https://testing-library.com/docs/svelte-testing-library/setup
+## Examples
 
-## Docs
+Below are some examples of how to use `@noma.to/qwik-testing-library` to tests your Qwik components.
 
-See the [**docs**][qtl-docs] over at the Testing Library website.
+You can also learn more about the [**queries**][tl-queries-docs] and [**user events**][tl-user-events-docs] over at the
+Testing Library website.
+
+[tl-queries-docs]: https://testing-library.com/docs/queries/about
+
+[tl-user-events-docs]: https://testing-library.com/docs/user-event/intro
+
+### Qwikstart
+
+This is a minimal setup to get you started, with line-by-line explanations.
+
+```tsx
+// counter.spec.tsx
+
+// import qwik-testing methods
+import {screen, render, waitFor} from "@noma.to/qwik-testing-library";
+// import the component to be tested
+import {Counter} from "./counter";
+
+// describe the test suite
+describe("<Counter />", () => {
+  // describe the test case
+  it("should increment the counter", async () => {
+    // render the component into the DOM
+    await render(<Counter/>);
+
+    // retrieve the 'increment count' button
+    const incrementBtn = screen.getByRole("button", {name: /increment count/});
+    // click the button twice
+    await userEvent.click(incrementBtn);
+    await userEvent.click(incrementBtn);
+
+    // assert that the counter is now 1
+    await waitFor(() => expect(screen.getByText(/count:2/)).toBeInTheDocument());
+  });
+})
+```
 
 ## Issues
 
