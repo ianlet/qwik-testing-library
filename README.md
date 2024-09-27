@@ -77,7 +77,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 [github-star]: https://github.com/ianlet/qwik-testing-library/stargazers
 
-[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20qwik-testing-library%20by%20%40@noma_hq%20https%3A%2F%2Fgithub.com%2Fianlet%2Fqwik-testing-library%20%F0%9F%91%8D
+[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20qwik-testing-library%20by%20%40noma_hq%20https%3A%2F%2Fgithub.com%2Fianlet%2Fqwik-testing-library%20%F0%9F%91%8D
 
 [twitter-badge]: https://img.shields.io/twitter/url/https/github.com/ianlet/qwik-testing-library.svg?style=social
 
