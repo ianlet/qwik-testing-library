@@ -33,7 +33,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 <hr />
 
-[qtl-docs]: https://github.com/ianlet/qwik-testing-library/blob/main/README.md#installation
+[qtl-docs]: https://github.com/ianlet/qwik-testing-library#installation
 
 [qtl-docs-repo]: https://github.com/ianlet/qwik-testing-library/blob/main/README.md
 
