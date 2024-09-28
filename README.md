@@ -132,7 +132,18 @@ npm install --save-dev @noma.to/qwik-testing-library
 This library supports `qwik` versions `1.7.2` and above.
 
 You may also be interested in installing `@testing-library/jest-dom` so you can
-use [the custom jest matchers][jest-dom].
+use [the custom jest matchers][jest-dom] and [the user event library][user-event] to test interactions with the DOM.
+
+```shell
+npm install --save-dev @testing-library/jest-dom @testing-library/user-event
+```
+
+Finally, we need a DOM environment to run the tests in.
+This library was tested (for now) only with `jsdom` so we recommend using it:
+
+```shell
+npm install --save-dev jsdom
+```
 
 [npm]: https://www.npmjs.com/
 
@@ -140,22 +151,67 @@ use [the custom jest matchers][jest-dom].
 
 [jest-dom]: https://github.com/testing-library/jest-dom
 
+[user-event]: https://github.com/testing-library/user-event
+
 ## Setup
 
 We recommend using `@noma.to/qwik-testing-library` with [Vitest][] as your test
-runner. To get started, configure how Vite will run your tests.
+runner.
 
-```diff
-  // vite.config.js
+If you haven't done so already, add vitest to your project using Qwik CLI:
 
-  export default defineConfig({
-    plugins: [qwikVite(), tsconfigPaths()],
-+   test: {
-+     environment: "jsdom",
-+     setupFiles: ["./vitest.setup.ts"],
-+     globals: true,
-+   },
-  });
+```shell
+npm qwik add vitest
+```
+
+After that, we need to configure Vitest so it can run your tests.
+For this, create a _separate_ `vitest.config.ts` so you don't have to modify your project's `vite.config.ts`:
+
+```ts
+// vitest.config.ts
+
+import {defineConfig, mergeConfig} from "vitest/config";
+import viteConfig from "./vite.config";
+
+export default defineConfig((configEnv) =>
+  mergeConfig(
+    viteConfig(configEnv),
+    defineConfig({
+      // qwik-testing-library needs to consider your project as a Qwik lib
+      // if it's already a Qwik lib, you can remove this section
+      build: {
+        target: "es2020",
+        lib: {
+          entry: "./src/index.ts",
+          formats: ["es", "cjs"],
+          fileName: (format, entryName) =>
+            `${entryName}.qwik.${format === "es" ? "mjs" : "cjs"}`,
+        },
+      },
+      // configure your test environment
+      test: {
+        environment: "jsdom",
+        setupFiles: ["./vitest.setup.ts"],
+        globals: true,
+      },
+    }),
+  ),
+);
+```
+
+For now, `qwik-testing-library` needs to consider your project as a lib ([PR welcomed][prs] to simplify this).
+Hence, the `build.lib` section in the config above.
+
+As the build will try to use `./src/index.ts` as the entry point, we need to create it:
+
+```ts
+// ./src/index.ts
+
+/**
+ * DO NOT DELETE THIS FILE
+ *
+ * This entrypoint is needed by @noma.to/qwik-testing-library to run your tests
+ */
 ```
 
 Then, create the `vitest.setup.ts` file:
