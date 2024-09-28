@@ -27,12 +27,9 @@ async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
   const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
 
   const { cleanup } = await qwik.render(container, wrappedUi, { serverData });
-
-  qwikLoader(baseElement.ownerDocument);
-
   mountedContainers.add({ container, componentCleanup: cleanup });
 
-  const queryHelpers = getQueriesForElement(container, queries);
+  qwikLoader(baseElement.ownerDocument);
 
   return {
     container,
@@ -55,7 +52,7 @@ async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
             prettyDOM(el, maxLength, { ...options, filterNode: () => true }),
           ),
     unmount: cleanup,
-    ...queryHelpers,
+    ...getQueriesForElement(container, queries),
   };
 }
 
