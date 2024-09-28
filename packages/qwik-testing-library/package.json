@@ -28,8 +28,7 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "validate": "pnpm build",
-    "release": "np"
+    "validate": "pnpm build"
   },
   "devDependencies": {
     "@builder.io/qwik": "1.9.0",
@@ -40,7 +39,6 @@
     "@typescript-eslint/parser": "7.16.1",
     "eslint": "8.57.0",
     "eslint-plugin-qwik": "1.9.0",
-    "np": "^8.0.4",
     "prettier": "3.3.3",
     "typescript": "5.4.5",
     "undici": "*",
