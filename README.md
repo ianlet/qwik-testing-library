@@ -91,12 +91,12 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [Installation](#installation)
 - [Setup](#setup)
 - [Examples](#examples)
-  - [Qwikstart](#qwikstart)
+    - [Qwikstart](#qwikstart)
 - [Gotchas](#gotchas)
 - [Issues](#issues)
-  - [🐛 Bugs](#-bugs)
-  - [💡 Feature Requests](#-feature-requests)
-  - [❓ Questions](#-questions)
+    - [🐛 Bugs](#-bugs)
+    - [💡 Feature Requests](#-feature-requests)
+    - [❓ Questions](#-questions)
 - [Contributors](#contributors)
 - [Acknowledgements](#acknowledgements)
 
@@ -131,7 +131,7 @@ npm install --save-dev @noma.to/qwik-testing-library
 
 This library supports `qwik` versions `1.7.2` and above.
 
-You may also be interested in installing `@testing-library/jest-dom` so you can
+You may also be interested in installing `@testing-library/jest-dom` and `@testing-library/user-event` so you can
 use [the custom jest matchers][jest-dom] and [the user event library][user-event] to test interactions with the DOM.
 
 ```shell
