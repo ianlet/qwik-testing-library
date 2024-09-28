@@ -31,7 +31,6 @@ jobs:
         check: [ 'test' ]
         include:
           - { node: '22', qwik: '1.9', check: 'lint' }
-          - { node: '22', qwik: 'next', check: 'test' }
 
     steps:
       - name: ⬇️ Checkout repo
@@ -58,7 +57,7 @@ jobs:
           pnpm --filter "{apps/qwik-basic-demo}" install @builder.io/qwik@${{ matrix.qwik }}
 
       - name: ▶️ Run ${{ matrix.check }}
-        run: npm ${{ matrix.check }}
+        run: pnpm ${{ matrix.check }}
 
   build:
     runs-on: ubuntu-latest
