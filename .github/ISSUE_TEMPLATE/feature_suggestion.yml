@@ -1,0 +1,12 @@
+name: ✨ Suggestion or Feature Request
+description: Suggestions on how we can improve the library.
+title: '[✨]'
+labels: [ 'enhancement', 'STATUS-1: needs triage' ]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      description: 'A clear and concise description of your suggestion or feature request'
+      label: Suggestion
+    validations:
+      required: true
