@@ -11,6 +11,7 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "build": "pnpm --filter '{packages/qwik-testing-library}' run build",
+    "release:prepare": "pnpm --filter '{packages/qwik-testing-library}' run build && cp README.md packages/qwik-testing-library/README.md && cp LICENSE packages/qwik-testing-library/LICENSE",
     "release": "pnpm --filter '{packages/qwik-testing-library}' --workspace-concurrency=1 exec -- npx --no-install semantic-release -e semantic-release-monorepo",
     "prepare": "husky"
   },
