@@ -37,7 +37,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 [qtl-docs-repo]: https://github.com/ianlet/qwik-testing-library/blob/main/README.md
 
-[build-badge]: https://img.shields.io/github/actions/workflow/status/ianlet/qwik-testing-library/release.yml?style=flat-square
+[build-badge]: https://img.shields.io/github/actions/workflow/status/ianlet/qwik-testing-library/ci.yml?style=flat-square
 
 [build]: https://github.com/ianlet/qwik-testing-library/actions
 
