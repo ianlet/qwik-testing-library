@@ -53,8 +53,8 @@ jobs:
 
       - name: 📥 Download deps
         run: |
-          pnpm install --no-package-lock
-          pnpm install --no-save @builder.io/qwik@${{ matrix.qwik }}
+          pnpm install
+          pnpm install @builder.io/qwik@${{ matrix.qwik }}
 
       - name: ▶️ Run ${{ matrix.check }}
         run: npm ${{ matrix.check }}
