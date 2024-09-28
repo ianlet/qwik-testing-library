@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [ '16', '18', '20', '22' ]
+        node: [ '18', '20', '22' ]
         qwik: [ '1.7', '1.8', '1.9' ]
         check: [ 'test' ]
         include:
@@ -54,7 +54,8 @@ jobs:
       - name: 📥 Download deps
         run: |
           pnpm install
-          pnpm install @builder.io/qwik@${{ matrix.qwik }}
+          pnpm --filter "{packages/qwik-testing-library}" install @builder.io/qwik@${{ matrix.qwik }}
+          pnpm --filter "{apps/qwik-basic-demo}" install @builder.io/qwik@${{ matrix.qwik }}
 
       - name: ▶️ Run ${{ matrix.check }}
         run: npm ${{ matrix.check }}
