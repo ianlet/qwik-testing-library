@@ -4,6 +4,7 @@
   "description": "Simple and complete Qwik testing utilities that encourage good testing practices.",
   "repository": "https://github.com/ianlet/qwik-testing-library",
   "homepage": "https://github.com/ianlet/qwik-testing-library",
+  "license": "MIT",
   "main": "./lib/index.qwik.mjs",
   "qwik": "./lib/index.qwik.mjs",
   "types": "./lib-types/index.d.ts",
