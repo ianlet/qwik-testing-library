@@ -294,7 +294,7 @@ describe("<Counter />", () => {
     await userEvent.click(incrementBtn);
     await userEvent.click(incrementBtn);
 
-    // assert that the counter is now 1
+    // assert that the counter is now 2
     await waitFor(() => expect(screen.getByText(/count:2/)).toBeInTheDocument());
   });
 })
