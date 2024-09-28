@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "toc": "doctoc README.md",
-    "test": "pnpm -r test",
+    "test": "pnpm -r build && pnpm -r test",
     "fmt": "pnpm -r fmt",
     "lint": "pnpm -r lint",
     "validate": "pnpm -r lint && pnpm -r validate",
