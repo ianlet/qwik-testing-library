@@ -1,0 +1,125 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Tuesdays at 14:45 UTC (10:45 EST)
+    - cron: 45 14 * * 1
+
+permissions:
+  contents: read # for checkout
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  main:
+    # ignore all-contributors PRs
+    if: ${{ !contains(github.head_ref, 'all-contributors') }}
+    name: Node ${{ matrix.node }}, Qwik ${{ matrix.qwik }}, ${{ matrix.check }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [ '16', '18', '20', '22' ]
+        qwik: [ '1.7', '1.8', '1.9' ]
+        check: [ 'test' ]
+        include:
+          - { node: '22', qwik: '1.9', check: 'lint' }
+          - { node: '22', qwik: 'next', check: 'test' }
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🧱 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'pnpm'
+
+      - name: 📥 Download deps
+        run: |
+          pnpm install --no-package-lock
+          pnpm install --no-save @builder.io/qwik@${{ matrix.qwik }}
+
+      - name: ▶️ Run ${{ matrix.check }}
+        run: npm ${{ matrix.check }}
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🧱 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: 📥 Download deps
+        run: pnpm install
+
+      - name: 🏗️ Build packages
+        run: pnpm build
+
+  release:
+    name: Release
+    needs: [ main, build ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🧱 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: 📥 Download deps
+        run: pnpm install
+
+      - name: 🏗️ Build packages
+        run: pnpm release:prepare
+
+      - name: 🚀 Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm release

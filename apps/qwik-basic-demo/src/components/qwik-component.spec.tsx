@@ -219,7 +219,10 @@ describe("<QwikComponent />", () => {
     });
 
     it("should handle multiple events", async () => {
-      await render(<QwikComponent onClick$={[firstEvent, secondEvent]} />);
+      await render(
+        // eslint-disable-next-line qwik/valid-lexical-scope
+        <QwikComponent onFirst$={firstEvent} onSecond$={secondEvent} />,
+      );
 
       const eventsBtn = screen.getByRole("button", {
         name: /fire events/,

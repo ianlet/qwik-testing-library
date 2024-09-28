@@ -2,10 +2,10 @@ import {
   $,
   component$,
   createContextId,
-  Fragment,
   noSerialize,
   NoSerialize,
-  QRLEventHandlerMulti,
+  PropsOf,
+  QRL,
   Resource,
   Slot,
   useComputed$,
@@ -20,14 +20,15 @@ import {
 
 export const MyContext = createContextId<{ item: string }>("my-context");
 
-interface QwikComponentProps {
+interface QwikComponentProps extends PropsOf<"div"> {
   myProp?: string;
   items?: string[];
-  onClick$?: QRLEventHandlerMulti<MouseEvent, HTMLButtonElement>;
+  onFirst$?: QRL<() => void>;
+  onSecond$?: QRL<() => void>;
 }
 
 export const QwikComponent = component$<QwikComponentProps>(
-  ({ myProp = "qwik-prop", items = [], onClick$ }) => {
+  ({ myProp = "qwik-prop", items = [], onFirst$, onSecond$ }) => {
     const mySig = useSignal("my-signal");
     const propSig = useSignal(myProp);
     const conditionalSig = useSignal(false);
@@ -50,13 +51,12 @@ export const QwikComponent = component$<QwikComponentProps>(
     const taskSig = useSignal("");
 
     useTask$(({ track }) => {
-      const value = track(trackedSig);
-
-      taskSig.value = value;
+      taskSig.value = track(trackedSig);
     });
 
     const nonSerializableSig = useSignal<NoSerialize<MyClass>>();
 
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(() => {
       nonSerializableSig.value = noSerialize(
         new MyClass("non-serializable-value"),
@@ -123,7 +123,7 @@ export const QwikComponent = component$<QwikComponentProps>(
         <button onClick$={changeTrackedValue}>change tracked</button>
         <button onClick$={changeCondition}>change condition</button>
 
-        <button onClick$={onClick$}>fire events</button>
+        <button onClick$={[onFirst$, onSecond$]}>fire events</button>
       </div>
     );
   },
