@@ -1,6 +1,6 @@
 {
   "name": "@noma.to/qwik-testing-library-root",
-  "version": "0.0.1",
+  "version": "0.0.0-semantically-released",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "validate": "pnpm --filter '{packages/qwik-testing-library}' run validate && pnpm --filter '{apps/qwik-basic-demo}' run validate",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
+    "build": "pnpm --filter '{packages/qwik-testing-library}' run build",
     "release": "pnpm --filter '{packages/qwik-testing-library}' --workspace-concurrency=1 exec -- npx --no-install semantic-release -e semantic-release-monorepo",
     "prepare": "husky"
   },

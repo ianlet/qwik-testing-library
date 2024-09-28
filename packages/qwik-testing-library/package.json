@@ -1,7 +1,7 @@
 {
   "name": "@noma.to/qwik-testing-library",
-  "version": "0.0.1",
-  "description": "Create a Qwik library",
+  "version": "0.0.0-semantically-released",
+  "description": "Simple and complete Qwik testing utilities that encourage good testing practices.",
   "main": "./lib/index.qwik.mjs",
   "qwik": "./lib/index.qwik.mjs",
   "types": "./lib-types/index.d.ts",
@@ -22,12 +22,13 @@
   "private": false,
   "type": "module",
   "scripts": {
+    "build": "pnpm build.lib && pnpm build.types",
     "build.lib": "vite build --mode lib",
     "build.types": "tsc --emitDeclarationOnly",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "validate": "pnpm run build.lib && pnpm run build.types",
+    "validate": "pnpm build",
     "release": "np"
   },
   "devDependencies": {

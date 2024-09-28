@@ -1,6 +1,6 @@
 {
   "name": "my-qwik-library-name",
-  "version": "0.0.1",
+  "version": "0.0.0-semantically-released",
   "description": "Create a Qwik library",
   "main": "./lib/index.qwik.mjs",
   "qwik": "./lib/index.qwik.mjs",
