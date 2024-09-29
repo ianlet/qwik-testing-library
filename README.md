@@ -92,6 +92,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [Setup](#setup)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
+    - [Qwik City - `server$` calls](#qwik-city---server-calls)
 - [Gotchas](#gotchas)
 - [Issues](#issues)
     - [🐛 Bugs](#-bugs)
@@ -299,6 +300,57 @@ describe("<Counter />", () => {
   });
 })
 ```
+
+### Qwik City - `server$` calls
+
+If one of your Qwik components uses `server$` calls, your tests might fail with a rather cryptic message (e.g. `QWIK
+ERROR __vite_ssr_import_0__.myServerFunctionQrl is not a function` or
+`QWIK ERROR Failed to parse URL from ?qfunc=DNpotUma33o`).
+
+We're happy to discuss it on [Discord][discord], but we consider this failure to be a good thing:
+your components should be tested in isolation, so you will be forced to mock your server functions.
+
+Here is an example of how to test a component that uses `server$` calls:
+
+```ts
+// ~/server/blog-posts.ts
+
+import {server$} from "@builder.io/qwik-city";
+import {BlogPost} from "~/lib/blog-post";
+
+export const getLatestPosts$ = server$(function (): Promise<BlogPost> {
+  // get the latest posts
+  return Promise.resolve([]);
+});
+```
+
+```tsx
+// ~/components/latest-post-list.spec.tsx
+
+import {render, screen, waitFor} from "@noma.to/qwik-testing-library";
+import {LatestPostList} from "./latest-post-list";
+
+vi.mock('~/server/blog-posts', () => ({
+  // the mocked function should end with `Qrl` instead of `$`
+  getLatestPostsQrl: () => {
+    return Promise.resolve([{id: 'post-1', title: 'Post 1'}, {id: 'post-2', title: 'Post 2'}]);
+  },
+}));
+
+describe('<LatestPostList />', () => {
+  it('should render the latest posts', async () => {
+    await render(<LatestPostList/>);
+
+    await waitFor(() => expect(screen.queryAllByRole('listitem')).toHaveLength(2));
+  });
+});
+```
+
+Notice how the mocked function is ending with `Qrl` instead of `$`, despite being named as `getLatestPosts$`.
+This is caused by the Qwik optimizer renaming it to `Qrl`.
+So, we need to mock the `Qrl` function instead of the original `$` one.
+
+If your `server$` function doesn't end with `$`, the Qwik optimizer might not rename it to `Qrl`.
 
 ## Gotchas
 
