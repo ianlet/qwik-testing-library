@@ -24,6 +24,7 @@ async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
     );
   }
 
+  // Wrap the component under test if a wrapper is provided
   const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
 
   const { cleanup } = await qwik.render(container, wrappedUi, { serverData });
