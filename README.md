@@ -171,7 +171,7 @@ npm install --save-dev jsdom
 
 [user-event]: https://github.com/testing-library/user-event
 
-We recommend using `@noma.to/qwik-testing-library` with [Vitest][vitest] as your test runner.
+We recommend using `qwik-testing-library` with [Vitest][vitest] as your test runner.
 
 If you haven't done so already, add vitest to your project using Qwik CLI:
 
