@@ -279,6 +279,8 @@ This is a minimal setup to get you started, with line-by-line explanations.
 
 // import qwik-testing methods
 import {screen, render, waitFor} from "@noma.to/qwik-testing-library";
+// import the userEvent methods to interact with the DOM
+import {userEvent} from "@testing-library/user-event";
 // import the component to be tested
 import {Counter} from "./counter";
 
