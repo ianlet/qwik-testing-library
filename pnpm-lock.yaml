@@ -30,7 +30,7 @@ importers:
         specifier: ^8.0.2
         version: 8.0.2(semantic-release@24.1.2(typescript@5.6.2))
 
-  apps/qwik-basic-demo:
+  apps/qwik-testing-library-e2e-tests:
     devDependencies:
       '@builder.io/qwik':
         specifier: 1.9.0
