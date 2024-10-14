@@ -2,6 +2,7 @@ import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
 import { JSXOutput } from "@builder.io/qwik";
 import type { ComponentRef, Options, Result } from "./types";
 import { qwikLoader } from "./qwikloader";
+import { clearAllMocks, mock$, mockQrl } from "./mock";
 
 const mountedContainers = new Set<ComponentRef>();
 
@@ -74,4 +75,4 @@ function cleanup() {
 }
 
 export * from "@testing-library/dom";
-export { cleanup, render };
+export { cleanup, render, mock$, mockQrl, clearAllMocks };

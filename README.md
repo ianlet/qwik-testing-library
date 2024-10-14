@@ -92,6 +92,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [Setup](#setup)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
+    - [Mocking Component Callbacks (experimental)](#mocking-component-callbacks-experimental)
     - [Qwik City - `server$` calls](#qwik-city---server-calls)
 - [Gotchas](#gotchas)
 - [Issues](#issues)
@@ -299,6 +300,64 @@ describe("<Counter />", () => {
 
     // assert that the counter is now 2
     await waitFor(() => expect(screen.getByText(/count:2/)).toBeInTheDocument());
+  });
+})
+```
+
+### Mocking Component Callbacks (experimental)
+
+> [!WARNING]
+> This feature is under a testing phase and thus experimental.
+> Its API may change in the future, so use it at your own risk.
+
+The Qwik Testing Library provides a `mock$` function
+that can be used to create a mock of a QRL and verify interactions on your Qwik components.
+
+It is _not_ a replacement of regular mocking functions (such as `vi.fn` and `vi.mock`) as its intended use is only for
+testing callbacks of Qwik components.
+
+Here's an example on how to use the `mock$` function:
+
+```tsx title="counter.spec.tsx"
+// import qwik-testing methods
+import {mock$, clearAllMock, render, screen, waitFor} from "@noma.to/qwik-testing-library";
+// import the userEvent methods to interact with the DOM
+import userEvent from "@testing-library/user-event";
+
+// import the component to be tested
+import {Counter} from "./counter";
+
+// describe the test suite
+describe("<Counter />", () => {
+  // initialize a mock
+  // note: the empty callback is required but currently unused
+  const onChangeMock = mock$(() => {
+  });
+
+  // setup beforeEach block to run before each test
+  beforeEach(() => {
+    // remember to always clear all mocks before each test
+    clearAllMocks();
+  });
+
+  // describe the 'on increment' test cases
+  describe("on increment", () => {
+    // describe the test case
+    it("should call onChange$", async () => {
+      // render the component into the DOM
+      await render(<Counter value={0} onChange$={onChangeMock}/>);
+
+      // retrieve the 'decrement' button
+      const decrementBtn = screen.getByRole("button", {name: "Decrement"});
+      // click the button
+      await userEvent.click(decrementBtn);
+
+      // assert that the onChange$ callback was called with the right value
+      // note: QRLs are async in Qwik, so we need to resolve them to verify interactions
+      await waitFor(() =>
+        expect(onChangeMock.resolve()).resolves.toHaveBeenCalledWith(-1),
+      );
+    });
   });
 })
 ```

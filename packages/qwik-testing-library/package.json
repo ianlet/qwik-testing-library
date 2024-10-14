@@ -46,6 +46,7 @@
     "typescript": "5.6.2",
     "undici": "*",
     "vite": "5.4.8",
-    "vite-tsconfig-paths": "^5.0.1"
+    "vite-tsconfig-paths": "^5.0.1",
+    "vitest": "^2.1.1"
   }
 }

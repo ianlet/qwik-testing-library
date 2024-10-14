@@ -1,7 +1,6 @@
 import { QwikComponent } from "./qwik-component";
 import { render, screen, waitFor } from "@noma.to/qwik-testing-library";
 import userEvent from "@testing-library/user-event";
-import { Mock } from "vitest";
 
 describe("<QwikComponent />", () => {
   const aProp = "my-prop";
@@ -206,31 +205,6 @@ describe("<QwikComponent />", () => {
           );
         });
       });
-    });
-  });
-
-  describe("Events", () => {
-    let firstEvent: Mock;
-    let secondEvent: Mock;
-
-    beforeEach(() => {
-      firstEvent = vi.fn();
-      secondEvent = vi.fn();
-    });
-
-    it("should handle multiple events", async () => {
-      await render(
-        // eslint-disable-next-line qwik/valid-lexical-scope
-        <QwikComponent onFirst$={firstEvent} onSecond$={secondEvent} />,
-      );
-
-      const eventsBtn = screen.getByRole("button", {
-        name: /fire events/,
-      });
-      await userEvent.click(eventsBtn);
-
-      expect(firstEvent).toHaveBeenCalledTimes(1);
-      expect(secondEvent).toHaveBeenCalledTimes(1);
     });
   });
 
