@@ -88,13 +88,14 @@ importers:
         version: 2.1.1(@types/node@22.7.4)(@vitest/ui@2.1.1)(jsdom@25.0.1)
 
   packages/qwik-testing-library:
-    devDependencies:
+    dependencies:
       '@builder.io/qwik':
-        specifier: 1.9.0
+        specifier: '>= 1.7.2 < 2'
         version: 1.9.0(@types/node@22.7.4)
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: '>= 10.1.0 < 11'
         version: 10.4.0
+    devDependencies:
       '@types/eslint':
         specifier: 8.56.10
         version: 8.56.10
