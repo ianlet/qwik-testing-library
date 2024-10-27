@@ -18,12 +18,12 @@ describe("<QwikComponent />", () => {
 
     describe("when props change", () => {
       it("should re-render", async () => {
+        const user = userEvent.setup();
         await render(<QwikComponent myProp={initialProp} />);
 
         const changePropBtn = screen.getByRole("button", {
           name: /change prop/,
         });
-        const user = userEvent.setup();
         await user.click(changePropBtn);
 
         expect(await screen.findByText(changedProp)).toBeInTheDocument();
@@ -34,13 +34,13 @@ describe("<QwikComponent />", () => {
       const conditionalValue = "conditional-value";
 
       it("should re-render", async () => {
+        const user = userEvent.setup();
         await render(<QwikComponent />);
         expect(screen.queryByText(conditionalValue)).not.toBeInTheDocument();
 
         const changeConditionBtn = screen.getByRole("button", {
           name: /change condition/,
         });
-        const user = userEvent.setup();
         await user.click(changeConditionBtn);
 
         expect(await screen.findByText(conditionalValue)).toBeInTheDocument();
@@ -85,12 +85,12 @@ describe("<QwikComponent />", () => {
 
       describe("when signal changes", () => {
         it("should re-render signal value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeSignalBtn = screen.getByRole("button", {
             name: /change signal/,
           });
-          const user = userEvent.setup();
           await user.click(changeSignalBtn);
 
           expect(
@@ -112,12 +112,12 @@ describe("<QwikComponent />", () => {
 
       describe("when store changes", () => {
         it("should re-render store value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeStoreBtn = screen.getByRole("button", {
             name: /change store/,
           });
-          const user = userEvent.setup();
           await user.click(changeStoreBtn);
 
           expect(
@@ -139,12 +139,12 @@ describe("<QwikComponent />", () => {
 
       describe("when computed changes", () => {
         it("should re-render computed value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeComputedBtn = screen.getByRole("button", {
             name: /change computed/,
           });
-          const user = userEvent.setup();
           await user.click(changeComputedBtn);
 
           expect(
@@ -166,12 +166,12 @@ describe("<QwikComponent />", () => {
 
       describe("when resource changes", () => {
         it("should re-render resource value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeResourceBtn = screen.getByRole("button", {
             name: /change resource/,
           });
-          const user = userEvent.setup();
           await user.click(changeResourceBtn);
 
           expect(
@@ -193,12 +193,12 @@ describe("<QwikComponent />", () => {
 
       describe("when context changes", () => {
         it("should re-render context value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeContextBtn = screen.getByRole("button", {
             name: /change context/,
           });
-          const user = userEvent.setup();
           await user.click(changeContextBtn);
 
           expect(
@@ -214,12 +214,12 @@ describe("<QwikComponent />", () => {
 
     describe("when tracked value changes", () => {
       it("should re-render", async () => {
+        const user = userEvent.setup();
         await render(<QwikComponent />);
 
         const changeValueBtn = screen.getByRole("button", {
           name: /change tracked/,
         });
-        const user = userEvent.setup();
         await user.click(changeValueBtn);
 
         expect(await screen.findByText(trackedTaskValue)).toBeInTheDocument();

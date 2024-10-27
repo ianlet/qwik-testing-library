@@ -23,20 +23,20 @@ describe("<Counter />", () => {
 
   describe("on increment", () => {
     it("should increase by 1", async () => {
+      const user = userEvent.setup();
       await render(<Counter onChange$={onChangeMock} />);
 
       const incrementBtn = screen.getByRole("button", { name: "Increment" });
-      const user = userEvent.setup();
       await user.click(incrementBtn);
 
       expect(await screen.findByText("Counter: 1")).toBeInTheDocument();
     });
 
     it("should call onChange$", async () => {
+      const user = userEvent.setup();
       await render(<Counter onChange$={onChangeMock} />);
 
       const incrementBtn = screen.getByRole("button", { name: "Increment" });
-      const user = userEvent.setup();
       await user.click(incrementBtn);
 
       await waitFor(() =>
@@ -47,20 +47,20 @@ describe("<Counter />", () => {
 
   describe("on decrement", () => {
     it("should decrease by 1", async () => {
+      const user = userEvent.setup();
       await render(<Counter onChange$={onChangeMock} />);
 
       const decrementBtn = screen.getByRole("button", { name: "Decrement" });
-      const user = userEvent.setup();
       await user.click(decrementBtn);
 
       expect(await screen.findByText("Counter: -1")).toBeInTheDocument();
     });
 
     it("should call onChange$", async () => {
+      const user = userEvent.setup();
       await render(<Counter onChange$={onChangeMock} />);
 
       const decrementBtn = screen.getByRole("button", { name: "Decrement" });
-      const user = userEvent.setup();
       await user.click(decrementBtn);
 
       await waitFor(() =>

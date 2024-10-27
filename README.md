@@ -295,13 +295,14 @@ import {Counter} from "./counter";
 describe("<Counter />", () => {
   // describe the test case
   it("should increment the counter", async () => {
+    // setup user event
+    const user = userEvent.setup();
     // render the component into the DOM
     await render(<Counter/>);
 
     // retrieve the 'increment count' button
     const incrementBtn = screen.getByRole("button", {name: /increment count/});
     // click the button twice
-    const user = userEvent.setup();
     await user.click(incrementBtn);
     await user.click(incrementBtn);
 
@@ -351,13 +352,14 @@ describe("<Counter />", () => {
   describe("on increment", () => {
     // describe the test case
     it("should call onChange$", async () => {
+      // setup user event
+      const user = userEvent.setup();
       // render the component into the DOM
       await render(<Counter value={0} onChange$={onChangeMock}/>);
 
       // retrieve the 'decrement' button
       const decrementBtn = screen.getByRole("button", {name: "Decrement"});
       // click the button
-      const user = userEvent.setup();
       await user.click(decrementBtn);
 
       // assert that the onChange$ callback was called with the right value
