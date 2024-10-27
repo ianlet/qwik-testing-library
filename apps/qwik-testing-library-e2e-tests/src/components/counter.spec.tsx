@@ -29,9 +29,7 @@ describe("<Counter />", () => {
       const user = userEvent.setup();
       await user.click(incrementBtn);
 
-      await waitFor(() =>
-        expect(screen.getByText("Counter: 1")).toBeInTheDocument(),
-      );
+      expect(await screen.findByText("Counter: 1")).toBeInTheDocument();
     });
 
     it("should call onChange$", async () => {
@@ -55,9 +53,7 @@ describe("<Counter />", () => {
       const user = userEvent.setup();
       await user.click(decrementBtn);
 
-      await waitFor(() =>
-        expect(screen.getByText("Counter: -1")).toBeInTheDocument(),
-      );
+      expect(await screen.findByText("Counter: -1")).toBeInTheDocument();
     });
 
     it("should call onChange$", async () => {

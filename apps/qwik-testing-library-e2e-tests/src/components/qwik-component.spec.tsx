@@ -1,5 +1,5 @@
 import { QwikComponent } from "./qwik-component";
-import { render, screen, waitFor } from "@noma.to/qwik-testing-library";
+import { render, screen } from "@noma.to/qwik-testing-library";
 import { userEvent } from "@testing-library/user-event";
 
 describe("<QwikComponent />", () => {
@@ -26,9 +26,7 @@ describe("<QwikComponent />", () => {
         const user = userEvent.setup();
         await user.click(changePropBtn);
 
-        await waitFor(() =>
-          expect(screen.getByText(changedProp)).toBeInTheDocument(),
-        );
+        expect(await screen.findByText(changedProp)).toBeInTheDocument();
       });
     });
 
@@ -45,9 +43,7 @@ describe("<QwikComponent />", () => {
         const user = userEvent.setup();
         await user.click(changeConditionBtn);
 
-        await waitFor(() =>
-          expect(screen.getByText(conditionalValue)).toBeInTheDocument(),
-        );
+        expect(await screen.findByText(conditionalValue)).toBeInTheDocument();
       });
     });
 
@@ -84,9 +80,7 @@ describe("<QwikComponent />", () => {
       it("should render signal value", async () => {
         await render(<QwikComponent myProp={aProp} />);
 
-        await waitFor(() =>
-          expect(screen.getByText(signalValue)).toBeInTheDocument(),
-        );
+        expect(await screen.findByText(signalValue)).toBeInTheDocument();
       });
 
       describe("when signal changes", () => {
@@ -99,9 +93,9 @@ describe("<QwikComponent />", () => {
           const user = userEvent.setup();
           await user.click(changeSignalBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changedSignalValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changedSignalValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -126,9 +120,9 @@ describe("<QwikComponent />", () => {
           const user = userEvent.setup();
           await user.click(changeStoreBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changedStoreValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changedStoreValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -153,9 +147,9 @@ describe("<QwikComponent />", () => {
           const user = userEvent.setup();
           await user.click(changeComputedBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changedComputedValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changedComputedValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -180,9 +174,9 @@ describe("<QwikComponent />", () => {
           const user = userEvent.setup();
           await user.click(changeResourceBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changeResourceValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changeResourceValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -207,9 +201,9 @@ describe("<QwikComponent />", () => {
           const user = userEvent.setup();
           await user.click(changeContextBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changedContextValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changedContextValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -228,9 +222,7 @@ describe("<QwikComponent />", () => {
         const user = userEvent.setup();
         await user.click(changeValueBtn);
 
-        await waitFor(() =>
-          expect(screen.getByText(trackedTaskValue)).toBeInTheDocument(),
-        );
+        expect(await screen.findByText(trackedTaskValue)).toBeInTheDocument();
       });
     });
   });

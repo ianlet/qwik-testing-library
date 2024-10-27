@@ -306,7 +306,7 @@ describe("<Counter />", () => {
     await user.click(incrementBtn);
 
     // assert that the counter is now 2
-    await waitFor(() => expect(screen.getByText(/count:2/)).toBeInTheDocument());
+    await waitFor(() => expect(screen.findByText(/count:2/)).toBeInTheDocument());
   });
 })
 ```
