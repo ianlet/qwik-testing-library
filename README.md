@@ -419,7 +419,7 @@ Notice how the mocked function is ending with `Qrl` instead of `$`, despite bein
 This is caused by the Qwik optimizer renaming it to `Qrl`.
 So, we need to mock the `Qrl` function instead of the original `$` one.
 
-If your `server$` function doesn't end with `$`, the Qwik optimizer might not rename it to `Qrl`.
+If your function doesn't end with `$`, the Qwik optimizer will not rename it to `Qrl`.
 
 ## Gotchas
 
