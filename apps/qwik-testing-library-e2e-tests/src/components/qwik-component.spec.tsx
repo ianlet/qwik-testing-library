@@ -1,6 +1,6 @@
 import { QwikComponent } from "./qwik-component";
 import { render, screen, waitFor } from "@noma.to/qwik-testing-library";
-import userEvent from "@testing-library/user-event";
+import { userEvent } from "@testing-library/user-event";
 
 describe("<QwikComponent />", () => {
   const aProp = "my-prop";
@@ -23,7 +23,8 @@ describe("<QwikComponent />", () => {
         const changePropBtn = screen.getByRole("button", {
           name: /change prop/,
         });
-        await userEvent.click(changePropBtn);
+        const user = userEvent.setup();
+        await user.click(changePropBtn);
 
         await waitFor(() =>
           expect(screen.getByText(changedProp)).toBeInTheDocument(),
@@ -41,7 +42,8 @@ describe("<QwikComponent />", () => {
         const changeConditionBtn = screen.getByRole("button", {
           name: /change condition/,
         });
-        await userEvent.click(changeConditionBtn);
+        const user = userEvent.setup();
+        await user.click(changeConditionBtn);
 
         await waitFor(() =>
           expect(screen.getByText(conditionalValue)).toBeInTheDocument(),
@@ -94,7 +96,8 @@ describe("<QwikComponent />", () => {
           const changeSignalBtn = screen.getByRole("button", {
             name: /change signal/,
           });
-          await userEvent.click(changeSignalBtn);
+          const user = userEvent.setup();
+          await user.click(changeSignalBtn);
 
           await waitFor(() =>
             expect(screen.getByText(changedSignalValue)).toBeInTheDocument(),
@@ -120,7 +123,8 @@ describe("<QwikComponent />", () => {
           const changeStoreBtn = screen.getByRole("button", {
             name: /change store/,
           });
-          await userEvent.click(changeStoreBtn);
+          const user = userEvent.setup();
+          await user.click(changeStoreBtn);
 
           await waitFor(() =>
             expect(screen.getByText(changedStoreValue)).toBeInTheDocument(),
@@ -146,7 +150,8 @@ describe("<QwikComponent />", () => {
           const changeComputedBtn = screen.getByRole("button", {
             name: /change computed/,
           });
-          await userEvent.click(changeComputedBtn);
+          const user = userEvent.setup();
+          await user.click(changeComputedBtn);
 
           await waitFor(() =>
             expect(screen.getByText(changedComputedValue)).toBeInTheDocument(),
@@ -172,7 +177,8 @@ describe("<QwikComponent />", () => {
           const changeResourceBtn = screen.getByRole("button", {
             name: /change resource/,
           });
-          await userEvent.click(changeResourceBtn);
+          const user = userEvent.setup();
+          await user.click(changeResourceBtn);
 
           await waitFor(() =>
             expect(screen.getByText(changeResourceValue)).toBeInTheDocument(),
@@ -198,7 +204,8 @@ describe("<QwikComponent />", () => {
           const changeContextBtn = screen.getByRole("button", {
             name: /change context/,
           });
-          await userEvent.click(changeContextBtn);
+          const user = userEvent.setup();
+          await user.click(changeContextBtn);
 
           await waitFor(() =>
             expect(screen.getByText(changedContextValue)).toBeInTheDocument(),
@@ -218,7 +225,8 @@ describe("<QwikComponent />", () => {
         const changeValueBtn = screen.getByRole("button", {
           name: /change tracked/,
         });
-        await userEvent.click(changeValueBtn);
+        const user = userEvent.setup();
+        await user.click(changeValueBtn);
 
         await waitFor(() =>
           expect(screen.getByText(trackedTaskValue)).toBeInTheDocument(),

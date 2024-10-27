@@ -301,8 +301,9 @@ describe("<Counter />", () => {
     // retrieve the 'increment count' button
     const incrementBtn = screen.getByRole("button", {name: /increment count/});
     // click the button twice
-    await userEvent.click(incrementBtn);
-    await userEvent.click(incrementBtn);
+    const user = userEvent.setup();
+    await user.click(incrementBtn);
+    await user.click(incrementBtn);
 
     // assert that the counter is now 2
     await waitFor(() => expect(screen.getByText(/count:2/)).toBeInTheDocument());
@@ -328,7 +329,7 @@ Here's an example on how to use the `mock$` function:
 // import qwik-testing methods
 import {mock$, clearAllMock, render, screen, waitFor} from "@noma.to/qwik-testing-library";
 // import the userEvent methods to interact with the DOM
-import userEvent from "@testing-library/user-event";
+import {userEvent} from "@testing-library/user-event";
 
 // import the component to be tested
 import {Counter} from "./counter";
@@ -356,7 +357,8 @@ describe("<Counter />", () => {
       // retrieve the 'decrement' button
       const decrementBtn = screen.getByRole("button", {name: "Decrement"});
       // click the button
-      await userEvent.click(decrementBtn);
+      const user = userEvent.setup();
+      await user.click(decrementBtn);
 
       // assert that the onChange$ callback was called with the right value
       // note: QRLs are async in Qwik, so we need to resolve them to verify interactions

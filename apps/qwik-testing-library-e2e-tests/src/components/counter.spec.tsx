@@ -6,7 +6,7 @@ import {
   waitFor,
 } from "@noma.to/qwik-testing-library";
 import { Counter } from "./counter";
-import userEvent from "@testing-library/user-event";
+import { userEvent } from "@testing-library/user-event";
 
 describe("<Counter />", () => {
   const onChangeMock = mock$(() => {});
@@ -26,7 +26,8 @@ describe("<Counter />", () => {
       await render(<Counter onChange$={onChangeMock} />);
 
       const incrementBtn = screen.getByRole("button", { name: "Increment" });
-      await userEvent.click(incrementBtn);
+      const user = userEvent.setup();
+      await user.click(incrementBtn);
 
       await waitFor(() =>
         expect(screen.getByText("Counter: 1")).toBeInTheDocument(),
@@ -37,7 +38,8 @@ describe("<Counter />", () => {
       await render(<Counter onChange$={onChangeMock} />);
 
       const incrementBtn = screen.getByRole("button", { name: "Increment" });
-      await userEvent.click(incrementBtn);
+      const user = userEvent.setup();
+      await user.click(incrementBtn);
 
       await waitFor(() =>
         expect(onChangeMock.resolve()).resolves.toHaveBeenCalledWith(1),
@@ -50,7 +52,8 @@ describe("<Counter />", () => {
       await render(<Counter onChange$={onChangeMock} />);
 
       const decrementBtn = screen.getByRole("button", { name: "Decrement" });
-      await userEvent.click(decrementBtn);
+      const user = userEvent.setup();
+      await user.click(decrementBtn);
 
       await waitFor(() =>
         expect(screen.getByText("Counter: -1")).toBeInTheDocument(),
@@ -61,7 +64,8 @@ describe("<Counter />", () => {
       await render(<Counter onChange$={onChangeMock} />);
 
       const decrementBtn = screen.getByRole("button", { name: "Decrement" });
-      await userEvent.click(decrementBtn);
+      const user = userEvent.setup();
+      await user.click(decrementBtn);
 
       await waitFor(() =>
         expect(onChangeMock.resolve()).resolves.toHaveBeenCalledWith(-1),
