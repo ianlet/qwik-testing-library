@@ -4,6 +4,18 @@ import type { ComponentRef, Options, Result } from "./types";
 import { qwikLoader } from "./qwikloader";
 import { clearAllMocks, mock$, mockQrl } from "./mock";
 
+// if we're running in a test runner that supports afterEach
+// then we'll automatically run cleanup afterEach test
+// this ensures that tests run in isolation from each other
+// if you don't like this, set the QTL_SKIP_AUTO_CLEANUP env variable to 'true'
+if (typeof process === "undefined" || !process.env?.QTL_SKIP_AUTO_CLEANUP) {
+  if (typeof afterEach === "function") {
+    afterEach(() => {
+      cleanup();
+    });
+  }
+}
+
 const mountedContainers = new Set<ComponentRef>();
 
 async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {

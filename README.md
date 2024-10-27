@@ -128,10 +128,10 @@ This module is distributed via [npm][npm] which is bundled with [node][node] and
 should be installed as one of your project's `devDependencies`:
 
 ```shell
-npm install --save-dev @noma.to/qwik-testing-library
+npm install --save-dev @noma.to/qwik-testing-library @testing-library/dom
 ```
 
-This library supports `qwik` versions `1.7.2` and above.
+This library supports `qwik` versions `1.7.2` and above and `@testing-library/dom` versions `10.1.0` and above.
 
 You may also be interested in installing `@testing-library/jest-dom` and `@testing-library/user-event` so you can
 use [the custom jest matchers][jest-dom] and [the user event library][user-event] to test interactions with the DOM.
@@ -157,7 +157,7 @@ npm install --save-dev jsdom
 
 ## Setup
 
-We recommend using `@noma.to/qwik-testing-library` with [Vitest][] as your test
+We recommend using `@noma.to/qwik-testing-library` with [Vitest][vitest] as your test
 runner.
 
 If you haven't done so already, add vitest to your project using Qwik CLI:
@@ -221,7 +221,7 @@ Then, create the `vitest.setup.ts` file:
 ```ts
 // vitest.setup.ts
 
-import {afterEach} from "vitest";
+// Configure DOM matchers to work in Vitest
 import "@testing-library/jest-dom/vitest";
 
 // This has to run before qdev.ts loads. `beforeAll` is too late
@@ -229,17 +229,23 @@ globalThis.qTest = false; // Forces Qwik to run as if it was in a Browser
 globalThis.qRuntimeQrl = true;
 globalThis.qDev = true;
 globalThis.qInspector = false;
-
-afterEach(async () => {
-  const {cleanup} = await import("@noma.to/qwik-testing-library");
-  cleanup();
-});
 ```
 
-This setup will make sure that Qwik is properly configured and that everything gets cleaned after each test.
+This setup will make sure that Qwik is properly configured.
+It also loads `@testing-library/jest-dom/vitest` in your test runner
+so you can use matchers like `expect(...).toBeInTheDocument()`.
 
-Additionally, it loads `@testing-library/jest-dom/vitest` in your test runner so you can use matchers like
-`expect(...).toBeInTheDocument()`.
+By default, Qwik Testing Library cleans everything up automatically for you.
+You can opt out of this by setting the environment variable `QTL_SKIP_AUTO_CLEANUP` to `true`.
+Then in your tests, you can call the `cleanup` function when needed.
+For example:
+
+```ts
+import {cleanup} from "@noma.to/qwik-testing-library";
+import {afterEach} from "vitest";
+
+afterEach(cleanup);
+```
 
 Finally, edit your `tsconfig.json` to declare the following global types:
 
