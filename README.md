@@ -163,7 +163,7 @@ runner.
 If you haven't done so already, add vitest to your project using Qwik CLI:
 
 ```shell
-npm qwik add vitest
+npm run qwik add vitest
 ```
 
 After that, we need to configure Vitest so it can run your tests.
