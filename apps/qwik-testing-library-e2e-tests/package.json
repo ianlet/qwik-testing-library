@@ -7,9 +7,9 @@
   "types": "./lib-types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./lib-types/index.d.ts",
       "import": "./lib/index.qwik.mjs",
-      "require": "./lib/index.qwik.cjs",
-      "types": "./lib-types/index.d.ts"
+      "require": "./lib/index.qwik.cjs"
     }
   },
   "files": [
@@ -36,10 +36,10 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@builder.io/qwik": "1.12.0",
+    "@builder.io/qwik": "^1.12.0",
     "@noma.to/qwik-testing-library": "workspace:*",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/user-event": "^14.5.2",
+    "@testing-library/user-event": "^14.6.0",
     "@types/eslint": "8.56.10",
     "@types/node": "22.10.3",
     "@typescript-eslint/eslint-plugin": "8.19.0",
