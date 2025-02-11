@@ -41,18 +41,18 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^14.6.1",
     "@types/eslint": "8.56.10",
-    "@types/node": "22.10.3",
+    "@types/node": "22.13.1",
     "@typescript-eslint/eslint-plugin": "8.19.0",
     "@typescript-eslint/parser": "8.19.0",
-    "@vitest/ui": "^3.0.4",
+    "@vitest/ui": "^3.0.5",
     "eslint": "8.57.1",
     "eslint-plugin-qwik": "1.12.0",
     "jsdom": "^26.0.0",
     "prettier": "3.4.2",
     "typescript": "5.7.2",
     "undici": "*",
-    "vite": "6.0.11",
+    "vite": "6.1.0",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.4"
+    "vitest": "^3.0.5"
   }
 }
