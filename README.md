@@ -19,7 +19,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 [![MIT License][license-badge]][license]
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![PRs Welcome][prs-badge]][prs]
 [![Code of Conduct][coc-badge]][coc]
@@ -93,6 +93,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
     - [Manual Installation](#manual-installation)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
+    - [Mocking Component Callbacks (experimental)](#mocking-component-callbacks-experimental)
     - [Qwik City - `server$` calls](#qwik-city---server-calls)
 - [Gotchas](#gotchas)
 - [Issues](#issues)
@@ -144,10 +145,10 @@ This module is distributed via [npm][npm] which is bundled with [node][node] and
 should be installed as one of your project's `devDependencies`:
 
 ```shell
-npm install --save-dev @noma.to/qwik-testing-library
+npm install --save-dev @noma.to/qwik-testing-library @testing-library/dom
 ```
 
-This library supports `qwik` versions `1.7.2` and above.
+This library supports `qwik` versions `1.7.2` and above and `@testing-library/dom` versions `10.1.0` and above.
 
 You may also be interested in installing `@testing-library/jest-dom` and `@testing-library/user-event` so you can
 use [the custom jest matchers][jest-dom] and [the user event library][user-event] to test interactions with the DOM.
@@ -171,12 +172,15 @@ npm install --save-dev jsdom
 
 [user-event]: https://github.com/testing-library/user-event
 
-We recommend using `qwik-testing-library` with [Vitest][vitest] as your test runner.
+## Setup
+
+We recommend using `@noma.to/qwik-testing-library` with [Vitest][vitest] as your test
+runner.
 
 If you haven't done so already, add vitest to your project using Qwik CLI:
 
 ```shell
-npm qwik add vitest
+npm run qwik add vitest
 ```
 
 After that, we need to configure Vitest so it can run your tests.
@@ -234,7 +238,7 @@ Then, create the `vitest.setup.ts` file:
 ```ts
 // vitest.setup.ts
 
-import {afterEach} from "vitest";
+// Configure DOM matchers to work in Vitest
 import "@testing-library/jest-dom/vitest";
 
 // This has to run before qdev.ts loads. `beforeAll` is too late
@@ -242,17 +246,23 @@ globalThis.qTest = false; // Forces Qwik to run as if it was in a Browser
 globalThis.qRuntimeQrl = true;
 globalThis.qDev = true;
 globalThis.qInspector = false;
-
-afterEach(async () => {
-  const {cleanup} = await import("@noma.to/qwik-testing-library");
-  cleanup();
-});
 ```
 
-This setup will make sure that Qwik is properly configured and that everything gets cleaned after each test.
+This setup will make sure that Qwik is properly configured.
+It also loads `@testing-library/jest-dom/vitest` in your test runner
+so you can use matchers like `expect(...).toBeInTheDocument()`.
 
-Additionally, it loads `@testing-library/jest-dom/vitest` in your test runner so you can use matchers like
-`expect(...).toBeInTheDocument()`.
+By default, Qwik Testing Library cleans everything up automatically for you.
+You can opt out of this by setting the environment variable `QTL_SKIP_AUTO_CLEANUP` to `true`.
+Then in your tests, you can call the `cleanup` function when needed.
+For example:
+
+```ts
+import {cleanup} from "@noma.to/qwik-testing-library";
+import {afterEach} from "vitest";
+
+afterEach(cleanup);
+```
 
 Finally, edit your `tsconfig.json` to declare the following global types:
 
@@ -302,17 +312,79 @@ import {Counter} from "./counter";
 describe("<Counter />", () => {
   // describe the test case
   it("should increment the counter", async () => {
+    // setup user event
+    const user = userEvent.setup();
     // render the component into the DOM
     await render(<Counter/>);
 
     // retrieve the 'increment count' button
     const incrementBtn = screen.getByRole("button", {name: /increment count/});
     // click the button twice
-    await userEvent.click(incrementBtn);
-    await userEvent.click(incrementBtn);
+    await user.click(incrementBtn);
+    await user.click(incrementBtn);
 
     // assert that the counter is now 2
-    await waitFor(() => expect(screen.getByText(/count:2/)).toBeInTheDocument());
+    await waitFor(() => expect(screen.findByText(/count:2/)).toBeInTheDocument());
+  });
+})
+```
+
+### Mocking Component Callbacks (experimental)
+
+> [!WARNING]
+> This feature is under a testing phase and thus experimental.
+> Its API may change in the future, so use it at your own risk.
+
+The Qwik Testing Library provides a `mock$` function
+that can be used to create a mock of a QRL and verify interactions on your Qwik components.
+
+It is _not_ a replacement of regular mocking functions (such as `vi.fn` and `vi.mock`) as its intended use is only for
+testing callbacks of Qwik components.
+
+Here's an example on how to use the `mock$` function:
+
+```tsx title="counter.spec.tsx"
+// import qwik-testing methods
+import {mock$, clearAllMock, render, screen, waitFor} from "@noma.to/qwik-testing-library";
+// import the userEvent methods to interact with the DOM
+import {userEvent} from "@testing-library/user-event";
+
+// import the component to be tested
+import {Counter} from "./counter";
+
+// describe the test suite
+describe("<Counter />", () => {
+  // initialize a mock
+  // note: the empty callback is required but currently unused
+  const onChangeMock = mock$(() => {
+  });
+
+  // setup beforeEach block to run before each test
+  beforeEach(() => {
+    // remember to always clear all mocks before each test
+    clearAllMocks();
+  });
+
+  // describe the 'on increment' test cases
+  describe("on increment", () => {
+    // describe the test case
+    it("should call onChange$", async () => {
+      // setup user event
+      const user = userEvent.setup();
+      // render the component into the DOM
+      await render(<Counter value={0} onChange$={onChangeMock}/>);
+
+      // retrieve the 'decrement' button
+      const decrementBtn = screen.getByRole("button", {name: "Decrement"});
+      // click the button
+      await user.click(decrementBtn);
+
+      // assert that the onChange$ callback was called with the right value
+      // note: QRLs are async in Qwik, so we need to resolve them to verify interactions
+      await waitFor(() =>
+        expect(onChangeMock.resolve()).resolves.toHaveBeenCalledWith(-1),
+      );
+    });
   });
 })
 ```
@@ -366,7 +438,7 @@ Notice how the mocked function is ending with `Qrl` instead of `$`, despite bein
 This is caused by the Qwik optimizer renaming it to `Qrl`.
 So, we need to mock the `Qrl` function instead of the original `$` one.
 
-If your `server$` function doesn't end with `$`, the Qwik optimizer might not rename it to `Qrl`.
+If your function doesn't end with `$`, the Qwik optimizer will not rename it to `Qrl`.
 
 ## Gotchas
 
@@ -416,6 +488,7 @@ Thanks goes to these people ([emoji key][emojis]):
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://noma.to/"><img src="https://avatars.githubusercontent.com/u/6018732?v=4?s=100" width="100px;" alt="Ian Létourneau"/><br /><sub><b>Ian Létourneau</b></sub></a><br /><a href="https://github.com/ianlet/qwik-testing-library/commits?author=ianlet" title="Code">💻</a> <a href="https://github.com/ianlet/qwik-testing-library/commits?author=ianlet" title="Tests">⚠️</a> <a href="#ideas-ianlet" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ianlet/qwik-testing-library/commits?author=ianlet" title="Documentation">📖</a> <a href="#example-ianlet" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://brandonpittman.com"><img src="https://avatars.githubusercontent.com/u/967145?v=4?s=100" width="100px;" alt="Brandon Pittman"/><br /><sub><b>Brandon Pittman</b></sub></a><br /><a href="https://github.com/ianlet/qwik-testing-library/commits?author=brandonpittman" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>

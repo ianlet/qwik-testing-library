@@ -1,7 +1,6 @@
 import { QwikComponent } from "./qwik-component";
-import { render, screen, waitFor } from "@noma.to/qwik-testing-library";
-import userEvent from "@testing-library/user-event";
-import { Mock } from "vitest";
+import { render, screen } from "@noma.to/qwik-testing-library";
+import { userEvent } from "@testing-library/user-event";
 
 describe("<QwikComponent />", () => {
   const aProp = "my-prop";
@@ -19,16 +18,15 @@ describe("<QwikComponent />", () => {
 
     describe("when props change", () => {
       it("should re-render", async () => {
+        const user = userEvent.setup();
         await render(<QwikComponent myProp={initialProp} />);
 
         const changePropBtn = screen.getByRole("button", {
           name: /change prop/,
         });
-        await userEvent.click(changePropBtn);
+        await user.click(changePropBtn);
 
-        await waitFor(() =>
-          expect(screen.getByText(changedProp)).toBeInTheDocument(),
-        );
+        expect(await screen.findByText(changedProp)).toBeInTheDocument();
       });
     });
 
@@ -36,17 +34,16 @@ describe("<QwikComponent />", () => {
       const conditionalValue = "conditional-value";
 
       it("should re-render", async () => {
+        const user = userEvent.setup();
         await render(<QwikComponent />);
         expect(screen.queryByText(conditionalValue)).not.toBeInTheDocument();
 
         const changeConditionBtn = screen.getByRole("button", {
           name: /change condition/,
         });
-        await userEvent.click(changeConditionBtn);
+        await user.click(changeConditionBtn);
 
-        await waitFor(() =>
-          expect(screen.getByText(conditionalValue)).toBeInTheDocument(),
-        );
+        expect(await screen.findByText(conditionalValue)).toBeInTheDocument();
       });
     });
 
@@ -83,23 +80,22 @@ describe("<QwikComponent />", () => {
       it("should render signal value", async () => {
         await render(<QwikComponent myProp={aProp} />);
 
-        await waitFor(() =>
-          expect(screen.getByText(signalValue)).toBeInTheDocument(),
-        );
+        expect(await screen.findByText(signalValue)).toBeInTheDocument();
       });
 
       describe("when signal changes", () => {
         it("should re-render signal value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeSignalBtn = screen.getByRole("button", {
             name: /change signal/,
           });
-          await userEvent.click(changeSignalBtn);
+          await user.click(changeSignalBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changedSignalValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changedSignalValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -116,16 +112,17 @@ describe("<QwikComponent />", () => {
 
       describe("when store changes", () => {
         it("should re-render store value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeStoreBtn = screen.getByRole("button", {
             name: /change store/,
           });
-          await userEvent.click(changeStoreBtn);
+          await user.click(changeStoreBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changedStoreValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changedStoreValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -142,16 +139,17 @@ describe("<QwikComponent />", () => {
 
       describe("when computed changes", () => {
         it("should re-render computed value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeComputedBtn = screen.getByRole("button", {
             name: /change computed/,
           });
-          await userEvent.click(changeComputedBtn);
+          await user.click(changeComputedBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changedComputedValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changedComputedValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -168,16 +166,17 @@ describe("<QwikComponent />", () => {
 
       describe("when resource changes", () => {
         it("should re-render resource value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeResourceBtn = screen.getByRole("button", {
             name: /change resource/,
           });
-          await userEvent.click(changeResourceBtn);
+          await user.click(changeResourceBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changeResourceValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changeResourceValue),
+          ).toBeInTheDocument();
         });
       });
     });
@@ -194,43 +193,19 @@ describe("<QwikComponent />", () => {
 
       describe("when context changes", () => {
         it("should re-render context value", async () => {
+          const user = userEvent.setup();
           await render(<QwikComponent />);
 
           const changeContextBtn = screen.getByRole("button", {
             name: /change context/,
           });
-          await userEvent.click(changeContextBtn);
+          await user.click(changeContextBtn);
 
-          await waitFor(() =>
-            expect(screen.getByText(changedContextValue)).toBeInTheDocument(),
-          );
+          expect(
+            await screen.findByText(changedContextValue),
+          ).toBeInTheDocument();
         });
       });
-    });
-  });
-
-  describe("Events", () => {
-    let firstEvent: Mock;
-    let secondEvent: Mock;
-
-    beforeEach(() => {
-      firstEvent = vi.fn();
-      secondEvent = vi.fn();
-    });
-
-    it("should handle multiple events", async () => {
-      await render(
-        // eslint-disable-next-line qwik/valid-lexical-scope
-        <QwikComponent onFirst$={firstEvent} onSecond$={secondEvent} />,
-      );
-
-      const eventsBtn = screen.getByRole("button", {
-        name: /fire events/,
-      });
-      await userEvent.click(eventsBtn);
-
-      expect(firstEvent).toHaveBeenCalledTimes(1);
-      expect(secondEvent).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -239,16 +214,15 @@ describe("<QwikComponent />", () => {
 
     describe("when tracked value changes", () => {
       it("should re-render", async () => {
+        const user = userEvent.setup();
         await render(<QwikComponent />);
 
         const changeValueBtn = screen.getByRole("button", {
           name: /change tracked/,
         });
-        await userEvent.click(changeValueBtn);
+        await user.click(changeValueBtn);
 
-        await waitFor(() =>
-          expect(screen.getByText(trackedTaskValue)).toBeInTheDocument(),
-        );
+        expect(await screen.findByText(trackedTaskValue)).toBeInTheDocument();
       });
     });
   });
