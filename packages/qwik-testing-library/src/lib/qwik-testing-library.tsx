@@ -1,8 +1,8 @@
 import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
 import { JSXOutput } from "@builder.io/qwik";
 import type { ComponentRef, Options, Result } from "./types";
-import { qwikLoader } from "./qwikloader";
 import { clearAllMocks, mock$, mockQrl } from "./mock";
+import { qwikLoader } from "./qwikloader";
 
 // if we're running in a test runner that supports afterEach
 // then we'll automatically run cleanup afterEach test
@@ -40,10 +40,10 @@ async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
   // Wrap the component under test if a wrapper is provided
   const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
 
+  qwikLoader(baseElement.ownerDocument);
+
   const { cleanup } = await qwik.render(container, wrappedUi, { serverData });
   mountedContainers.add({ container, componentCleanup: cleanup });
-
-  qwikLoader(baseElement.ownerDocument);
 
   return {
     container,
