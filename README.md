@@ -88,8 +88,9 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 
 - [The Problem](#the-problem)
 - [This Solution](#this-solution)
-- [Installation](#installation)
 - [Setup](#setup)
+    - [Qwik CLI (preferred)](#qwik-cli-preferred)
+    - [Manual Installation](#manual-installation)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
     - [Mocking Component Callbacks (experimental)](#mocking-component-callbacks-experimental)
@@ -122,7 +123,23 @@ rendered output in the DOM. Its primary guiding principle is:
 
 [guiding-principle]: https://twitter.com/kentcdodds/status/977018512689455106
 
-## Installation
+## Setup
+
+### Qwik CLI (preferred)
+
+For the best experience, you can use the [Qwik CLI][qwik-cli] to install this library.
+It takes care of configuring your project for you and adding all the required dependencies.
+It will also add an example on how to test your Qwik components with `qwik-testing-library`.
+
+```shell
+pnpm qwik add testing-library
+```
+
+If you prefer to do it yourself, or are curious about what the command above will do for you, follow along.
+
+[qwik-cli]: https://qwik.dev/docs/integrations/testing-library/
+
+### Manual Installation
 
 This module is distributed via [npm][npm] which is bundled with [node][node] and
 should be installed as one of your project's `devDependencies`:
