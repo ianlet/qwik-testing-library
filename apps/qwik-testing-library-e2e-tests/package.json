@@ -36,7 +36,7 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^1.12.0",
+    "@builder.io/qwik": "^1.12.1",
     "@noma.to/qwik-testing-library": "workspace:*",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^14.6.1",
@@ -44,15 +44,15 @@
     "@types/node": "22.13.8",
     "@typescript-eslint/eslint-plugin": "8.24.0",
     "@typescript-eslint/parser": "8.24.0",
-    "@vitest/ui": "^3.0.5",
+    "@vitest/ui": "^3.0.9",
     "eslint": "8.57.1",
     "eslint-plugin-qwik": "1.12.0",
     "jsdom": "^26.0.0",
     "prettier": "3.5.0",
     "typescript": "5.7.3",
     "undici": "*",
-    "vite": "6.1.0",
+    "vite": "6.2.3",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.9"
   }
 }
