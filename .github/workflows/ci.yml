@@ -54,6 +54,7 @@ jobs:
         run: |
           pnpm install
           pnpm --filter "{packages/qwik-testing-library}" install @builder.io/qwik@${{ matrix.qwik }}
+          pnpm --filter "{packages/qwik-mock}" install @builder.io/qwik@${{ matrix.qwik }}
           pnpm --filter "{apps/qwik-testing-library-e2e-tests}" install @builder.io/qwik@${{ matrix.qwik }}
 
       - name: ▶️ Run ${{ matrix.check }}

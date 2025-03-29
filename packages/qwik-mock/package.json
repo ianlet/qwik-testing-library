@@ -1,7 +1,10 @@
 {
-  "name": "my-qwik-library-name",
+  "name": "@noma.to/qwik-mock",
   "version": "0.0.0-semantically-released",
-  "description": "Create a Qwik library",
+  "description": "Small utility to mock Qwik QRLs",
+  "repository": "https://github.com/ianlet/qwik-testing-library",
+  "homepage": "https://github.com/ianlet/qwik-testing-library",
+  "license": "MIT",
   "main": "./lib/index.qwik.mjs",
   "qwik": "./lib/index.qwik.mjs",
   "types": "./lib-types/index.d.ts",
@@ -22,38 +25,29 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "build": "qwik build",
+    "build": "pnpm build.lib && pnpm build.types",
     "build.lib": "vite build --mode lib",
     "build.types": "tsc --emitDeclarationOnly",
-    "dev": "vite --mode ssr",
-    "dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "start": "vite --open --mode ssr",
-    "test": "vitest run components",
-    "validate": "pnpm test",
-    "qwik": "qwik"
+    "validate": "pnpm build"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^1.12.1",
-    "@noma.to/qwik-testing-library": "workspace:*",
-    "@noma.to/qwik-mock": "workspace:*",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/user-event": "^14.6.1",
     "@types/eslint": "8.56.10",
     "@types/node": "22.13.8",
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
-    "@vitest/ui": "^3.0.9",
     "eslint": "8.57.1",
     "eslint-plugin-qwik": "1.12.1",
-    "jsdom": "^26.0.0",
     "prettier": "3.5.3",
     "typescript": "5.8.2",
     "undici": "*",
     "vite": "6.2.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.9"
+  },
+  "peerDependencies": {
+    "@builder.io/qwik": ">= 1.12.0 < 2"
   }
 }

@@ -11,9 +11,9 @@
     "validate": "pnpm -r lint && pnpm -r validate",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "build": "pnpm --filter '{packages/qwik-testing-library}' run build",
-    "release:prepare": "pnpm --filter '{packages/qwik-testing-library}' run build && cp README.md packages/qwik-testing-library/README.md && cp LICENSE packages/qwik-testing-library/LICENSE",
-    "release": "pnpm --filter '{packages/qwik-testing-library}' --workspace-concurrency=1 exec -- npx --no-install semantic-release -e semantic-release-monorepo",
+    "build": "pnpm --filter '{packages/**}' run build",
+    "release:prepare": "pnpm --filter '{packages/**}' run build && cp README.md packages/qwik-testing-library/README.md && cp LICENSE packages/qwik-testing-library/LICENSE && cp LICENSE packages/qwik-mock/LICENSE",
+    "release": "pnpm --filter '{packages/**}' --workspace-concurrency=1 exec -- npx --no-install semantic-release -e semantic-release-monorepo",
     "prepare": "husky"
   },
   "keywords": [
@@ -28,6 +28,8 @@
     "functional",
     "end-to-end",
     "e2e",
+    "mock",
+    "mocking",
     "vitest"
   ],
   "license": "MIT",

@@ -1,12 +1,7 @@
-import {
-  clearAllMocks,
-  mock$,
-  render,
-  screen,
-  waitFor,
-} from "@noma.to/qwik-testing-library";
-import { Counter } from "./counter";
+import { render, screen, waitFor } from "@noma.to/qwik-testing-library";
+import { clearAllMocks, mock$ } from "@noma.to/qwik-mock";
 import { userEvent } from "@testing-library/user-event";
+import { Counter } from "./counter";
 
 describe("<Counter />", () => {
   const onChangeMock = mock$(() => {});
