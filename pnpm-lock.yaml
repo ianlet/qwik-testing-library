@@ -35,6 +35,9 @@ importers:
       '@builder.io/qwik':
         specifier: ^1.12.1
         version: 1.12.1(vite@6.2.3(@types/node@22.13.8)(jiti@2.4.2))
+      '@noma.to/qwik-mock':
+        specifier: workspace:*
+        version: link:../../packages/qwik-mock
       '@noma.to/qwik-testing-library':
         specifier: workspace:*
         version: link:../../packages/qwik-testing-library
@@ -68,6 +71,49 @@ importers:
       jsdom:
         specifier: ^26.0.0
         version: 26.0.0
+      prettier:
+        specifier: 3.5.3
+        version: 3.5.3
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+      undici:
+        specifier: '*'
+        version: 7.4.0
+      vite:
+        specifier: 6.2.3
+        version: 6.2.3(@types/node@22.13.8)(jiti@2.4.2)
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.8.2)(vite@6.2.3(@types/node@22.13.8)(jiti@2.4.2))
+      vitest:
+        specifier: ^3.0.9
+        version: 3.0.9(@types/node@22.13.8)(@vitest/ui@3.0.9)(jiti@2.4.2)(jsdom@26.0.0)
+
+  packages/qwik-mock:
+    dependencies:
+      '@builder.io/qwik':
+        specifier: '>= 1.12.0 < 2'
+        version: 1.12.1(vite@6.2.3(@types/node@22.13.8)(jiti@2.4.2))
+    devDependencies:
+      '@types/eslint':
+        specifier: 8.56.10
+        version: 8.56.10
+      '@types/node':
+        specifier: 22.13.8
+        version: 22.13.8
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.28.0
+        version: 8.28.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.2))(eslint@8.57.1)(typescript@5.8.2)
+      '@typescript-eslint/parser':
+        specifier: 8.28.0
+        version: 8.28.0(eslint@8.57.1)(typescript@5.8.2)
+      eslint:
+        specifier: 8.57.1
+        version: 8.57.1
+      eslint-plugin-qwik:
+        specifier: 1.12.1
+        version: 1.12.1(eslint@8.57.1)(typescript@5.8.2)
       prettier:
         specifier: 3.5.3
         version: 3.5.3
@@ -372,12 +418,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@eslint-community/eslint-utils@4.4.1':
-    resolution: {integrity: sha512-s3O3waFUrMV8P/XaF/+ZTp1X9XBZW1a4B97ZnjQF2KYWaFD2A8KyFBsrsfSjEmjn3RGWAIuvlneuZm3CUK3jbA==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
 
   '@eslint-community/eslint-utils@4.5.1':
     resolution: {integrity: sha512-soEIOALTfTK6EjmKMMoLugwaP0rzkad90iIWd1hMO9ARkSAyjfMfkRRhLvD5qH7vvM0Cg72pieUfR6yh6XxC4w==}
@@ -3763,11 +3803,6 @@ snapshots:
   '@esbuild/win32-x64@0.25.1':
     optional: true
 
-  '@eslint-community/eslint-utils@4.4.1(eslint@8.57.1)':
-    dependencies:
-      eslint: 8.57.1
-      eslint-visitor-keys: 3.4.3
-
   '@eslint-community/eslint-utils@4.5.1(eslint@8.57.1)':
     dependencies:
       eslint: 8.57.1
@@ -4942,7 +4977,7 @@ snapshots:
 
   eslint@8.57.1:
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.1(eslint@8.57.1)
+      '@eslint-community/eslint-utils': 4.5.1(eslint@8.57.1)
       '@eslint-community/regexpp': 4.12.1
       '@eslint/eslintrc': 2.1.4
       '@eslint/js': 8.57.1

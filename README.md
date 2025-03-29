@@ -318,17 +318,27 @@ describe("<Counter />", () => {
 > This feature is under a testing phase and thus experimental.
 > Its API may change in the future, so use it at your own risk.
 
-The Qwik Testing Library provides a `mock$` function
+#### Setup
+
+Optionally, you can install `@noma.to/qwik-mock` to mock callbacks of Qwik components. It provides a `mock$` function
 that can be used to create a mock of a QRL and verify interactions on your Qwik components.
+
+```shell
+npm install --save-dev @noma.to/qwik-mock
+```
 
 It is _not_ a replacement of regular mocking functions (such as `vi.fn` and `vi.mock`) as its intended use is only for
 testing callbacks of Qwik components.
+
+#### Usage
 
 Here's an example on how to use the `mock$` function:
 
 ```tsx title="counter.spec.tsx"
 // import qwik-testing methods
-import {mock$, clearAllMock, render, screen, waitFor} from "@noma.to/qwik-testing-library";
+import {render, screen, waitFor} from "@noma.to/qwik-testing-library";
+// import qwik-mock methods
+import {mock$, clearAllMock} from "@noma.to/qwik-mock";
 // import the userEvent methods to interact with the DOM
 import {userEvent} from "@testing-library/user-event";
 
