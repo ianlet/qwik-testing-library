@@ -42,7 +42,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^14.6.1",
     "@types/eslint": "8.56.10",
-    "@types/node": "22.13.8",
+    "@types/node": "22.13.16",
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
     "@vitest/ui": "^3.0.9",
