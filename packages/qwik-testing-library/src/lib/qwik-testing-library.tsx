@@ -22,6 +22,10 @@ async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
 
   let { container, baseElement = container, wrapper: Wrapper } = options;
   const { queries, serverData } = options;
+  const { mode: renderMode = "csr" } = options;
+
+  // Wrap the component under test if a wrapper is provided
+  const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
 
   if (!baseElement) {
     // Default to document.body instead of documentElement to avoid output of potentially large
@@ -36,13 +40,29 @@ async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
     );
   }
 
-  // Wrap the component under test if a wrapper is provided
-  const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
+  if (renderMode === "ssr") {
+    // This approach works, but once resumed there are no interactions
+    // as the Qwik loader expects a server to be running to fetch the QRLs
+    const server = await import("@builder.io/qwik/server");
 
-  qwikLoader(baseElement.ownerDocument);
+    const result = await server.renderToString(wrappedUi, {
+      containerTagName: "div",
+    });
 
-  const { cleanup } = await qwik.render(container, wrappedUi, { serverData });
-  mountedContainers.add({ container, componentCleanup: cleanup });
+    container.innerHTML = result.html;
+    qwikLoader(baseElement.ownerDocument);
+
+    mountedContainers.add({
+      container,
+      componentCleanup: () => {},
+    });
+  } else {
+    const { cleanup } = await qwik.render(container, wrappedUi, { serverData });
+
+    mountedContainers.add({ container, componentCleanup: cleanup });
+
+    qwikLoader(baseElement.ownerDocument);
+  }
 
   return {
     container,
