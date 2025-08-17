@@ -11,7 +11,10 @@ export interface Options extends RenderOptions {
   baseElement?: HTMLElement;
   queries?: Queries & typeof queries;
   wrapper?: Component;
+  mode?: RenderMode;
 }
+
+export type RenderMode = "ssr" | "csr";
 
 export type DebugFn = (
   baseElement?: HTMLElement | HTMLElement[],
