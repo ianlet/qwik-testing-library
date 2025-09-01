@@ -36,10 +36,10 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^1.14.1",
+    "@builder.io/qwik": "^1.16.0",
     "@noma.to/qwik-testing-library": "workspace:*",
     "@noma.to/qwik-mock": "workspace:*",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/eslint": "8.56.10",
     "@types/node": "24.0.12",
@@ -52,7 +52,7 @@
     "prettier": "3.6.2",
     "typescript": "5.8.3",
     "undici": "*",
-    "vite": "7.0.3",
+    "vite": "7.1.4",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
   }
