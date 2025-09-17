@@ -39,7 +39,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "doctoc": "^2.2.1",
     "husky": "^9.1.7",
-    "semantic-release": "^24.2.7",
+    "semantic-release": "^24.2.8",
     "semantic-release-monorepo": "^8.0.2"
   },
   "config": {
