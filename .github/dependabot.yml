@@ -5,6 +5,13 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      env:
+        patterns:
+          - "*jsdom*"
+          - "*happy-dom*"
+      all:
+        dependency-type: "all"
     ignore:
       - dependency-name: "eslint"
         versions: [">=9"]
