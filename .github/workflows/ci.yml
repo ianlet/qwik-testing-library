@@ -27,11 +27,11 @@ jobs:
       fail-fast: false
       matrix:
         node: ["18", "20", "22"]
-        qwik: ["1.12", "1.14.1", "1.15", "1.16"]
+        qwik: ["1.12", "1.14.1", "1.15", "1.16", "1.17"]
         dom: ["jsdom", "happy-dom"]
         check: ["test"]
         include:
-          - { node: "22", qwik: "1.16", dom: "happy-dom", check: "lint" }
+          - { node: "22", qwik: "1.17", check: "lint" }
 
     steps:
       - name: ⬇️ Checkout repo
