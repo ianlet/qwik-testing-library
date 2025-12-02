@@ -7,6 +7,9 @@ const { dependencies = {}, peerDependencies = {} } = pkg as any;
 const makeRegex = (dep) => new RegExp(`^${dep}(/.*)?$`);
 const excludeAll = (obj) => Object.keys(obj).map(makeRegex);
 
+// Support both jsdom and happy-dom via TEST_DOM env variable
+const testEnvironment = process.env.TEST_DOM || "happy-dom";
+
 export default defineConfig(() => {
   return {
     build: {
@@ -32,7 +35,7 @@ export default defineConfig(() => {
     },
     plugins: [qwikVite(), tsconfigPaths()],
     test: {
-      environment: "jsdom",
+      environment: testEnvironment,
       setupFiles: ["./vitest.setup.ts"],
       globals: true,
     },

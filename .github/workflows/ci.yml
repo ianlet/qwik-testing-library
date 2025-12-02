@@ -20,17 +20,18 @@ jobs:
   main:
     # ignore all-contributors PRs
     if: ${{ !contains(github.head_ref, 'all-contributors') }}
-    name: Node ${{ matrix.node }}, Qwik ${{ matrix.qwik }}, ${{ matrix.check }}
+    name: Node ${{ matrix.node }}, Qwik ${{ matrix.qwik }}, ${{ matrix.dom }}, ${{ matrix.check }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         node: ["18", "20", "22"]
-        qwik: ["1.12", "1.14.1", "1.15", "1.16"]
+        qwik: ["1.12", "1.14.1", "1.15", "1.16", "1.17"]
+        dom: ["jsdom", "happy-dom"]
         check: ["test"]
         include:
-          - { node: "22", qwik: "1.16", check: "lint" }
+          - { node: "22", qwik: "1.17", check: "lint" }
 
     steps:
       - name: ⬇️ Checkout repo
@@ -59,6 +60,8 @@ jobs:
 
       - name: ▶️ Run ${{ matrix.check }}
         run: pnpm ${{ matrix.check }}
+        env:
+          TEST_DOM: ${{ matrix.dom }}
 
   build:
     runs-on: ubuntu-latest

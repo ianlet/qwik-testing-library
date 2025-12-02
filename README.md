@@ -141,10 +141,12 @@ npm install --save-dev @testing-library/jest-dom @testing-library/user-event
 ```
 
 Finally, we need a DOM environment to run the tests in.
-This library was tested (for now) only with `jsdom` so we recommend using it:
+This library is tested with both `jsdom` and `happy-dom`:
 
 ```shell
 npm install --save-dev jsdom
+# or
+npm install --save-dev happy-dom
 ```
 
 [npm]: https://www.npmjs.com/
@@ -192,7 +194,7 @@ export default defineConfig((configEnv) =>
       },
       // configure your test environment
       test: {
-        environment: "jsdom",
+        environment: "jsdom", // or "happy-dom"
         setupFiles: ["./vitest.setup.ts"],
         globals: true,
       },
