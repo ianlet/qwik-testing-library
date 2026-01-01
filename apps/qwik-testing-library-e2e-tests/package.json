@@ -47,7 +47,7 @@
     "@typescript-eslint/parser": "8.45.0",
     "@vitest/ui": "^3.2.4",
     "eslint": "8.57.1",
-    "eslint-plugin-qwik": "1.16.0",
+    "eslint-plugin-qwik": "1.18.0",
     "happy-dom": "^20.0.11",
     "jsdom": "^26.1.0",
     "prettier": "3.6.2",
