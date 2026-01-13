@@ -218,24 +218,40 @@ As the build will try to use `./src/index.ts` as the entry point, we need to cre
  */
 ```
 
-Then, create the `vitest.setup.ts` file:
+Then, configure the Qwik setup. You have two options:
+
+**Option 1: Via `setupFiles` (recommended for monorepos)**
+
+Add the setup directly to your config — no extra file needed:
+
+```ts
+// vitest.config.ts
+test: {
+  environment: "jsdom",
+  setupFiles: [
+    "@noma.to/qwik-testing-library/setup",
+    "@testing-library/jest-dom/vitest", // optional, for DOM matchers
+  ],
+  globals: true,
+},
+```
+
+**Option 2: Via `vitest.setup.ts`**
+
+Create a setup file for additional custom configuration:
 
 ```ts
 // vitest.setup.ts
 
-// Configure DOM matchers to work in Vitest
-import "@testing-library/jest-dom/vitest";
+// Configure Qwik for testing - must run before Qwik loads
+import "@noma.to/qwik-testing-library/setup";
 
-// This has to run before qdev.ts loads. `beforeAll` is too late
-globalThis.qTest = false; // Forces Qwik to run as if it was in a Browser
-globalThis.qRuntimeQrl = true;
-globalThis.qDev = true;
-globalThis.qInspector = false;
+// Configure DOM matchers to work in Vitest (optional)
+import "@testing-library/jest-dom/vitest";
 ```
 
-This setup will make sure that Qwik is properly configured.
-It also loads `@testing-library/jest-dom/vitest` in your test runner
-so you can use matchers like `expect(...).toBeInTheDocument()`.
+The setup import configures Qwik globals (`qTest`, `qRuntimeQrl`, `qDev`, `qInspector`) for testing.
+The jest-dom import enables matchers like `expect(...).toBeInTheDocument()`.
 
 By default, Qwik Testing Library cleans everything up automatically for you.
 You can opt out of this by setting the environment variable `QTL_SKIP_AUTO_CLEANUP` to `true`.

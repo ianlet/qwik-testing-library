@@ -36,7 +36,10 @@ export default defineConfig(() => {
     plugins: [qwikVite(), tsconfigPaths()],
     test: {
       environment: testEnvironment,
-      setupFiles: ["./vitest.setup.ts"],
+      setupFiles: [
+        "@noma.to/qwik-testing-library/setup",
+        "./vitest.setup.ts",
+      ],
       globals: true,
     },
   };
