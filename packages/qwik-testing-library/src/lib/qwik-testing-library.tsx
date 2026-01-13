@@ -1,5 +1,5 @@
 import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
-import { JSXOutput } from "@builder.io/qwik";
+import type { JSXOutput } from "@builder.io/qwik";
 import { getQwikLoaderScript } from "@builder.io/qwik/server";
 import type { ComponentRef, Options, Result } from "./types";
 
