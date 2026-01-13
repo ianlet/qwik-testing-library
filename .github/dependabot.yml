@@ -11,7 +11,8 @@ updates:
           - "*jsdom*"
           - "*happy-dom*"
       all:
-        dependency-type: "all"
+        patterns:
+          - "*"
     ignore:
       - dependency-name: "eslint"
         versions: [">=9"]
