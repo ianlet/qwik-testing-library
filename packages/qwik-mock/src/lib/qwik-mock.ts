@@ -1,7 +1,7 @@
-import { $, implicit$FirstArg } from "@builder.io/qwik";
-import { vi } from "vitest";
+import { type QRL, $, implicit$FirstArg } from "@builder.io/qwik";
+import { type Mock, vi } from "vitest";
 
-export const mockQrl = () => {
+export const mockQrl = (): QRL<Mock> => {
   return $(vi.fn());
 };
 
