@@ -35,17 +35,17 @@
   },
   "devDependencies": {
     "@types/eslint": "8.56.10",
-    "@types/node": "25.0.7",
-    "@typescript-eslint/eslint-plugin": "8.53.0",
-    "@typescript-eslint/parser": "8.53.0",
+    "@types/node": "25.1.0",
+    "@typescript-eslint/eslint-plugin": "8.54.0",
+    "@typescript-eslint/parser": "8.54.0",
     "eslint": "8.57.1",
-    "eslint-plugin-qwik": "1.18.0",
-    "prettier": "3.7.4",
+    "eslint-plugin-qwik": "1.19.0",
+    "prettier": "3.8.1",
     "typescript": "5.9.3",
     "undici": "*",
     "vite": "7.3.1",
-    "vite-tsconfig-paths": "^6.0.4",
-    "vitest": "^4.0.17"
+    "vite-tsconfig-paths": "^6.0.5",
+    "vitest": "^4.0.18"
   },
   "peerDependencies": {
     "@builder.io/qwik": ">= 1.12.0 < 2"
