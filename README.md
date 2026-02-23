@@ -162,10 +162,10 @@ npm install --save-dev happy-dom
 We recommend using `@noma.to/qwik-testing-library` with [Vitest][vitest] as your test
 runner.
 
-If you haven't done so already, add vitest to your project using Qwik CLI:
+If you haven't done so already, install vitest:
 
 ```shell
-npm run qwik add vitest
+npm install --save-dev vitest
 ```
 
 After that, we need to configure Vitest so it can run your tests.
@@ -195,7 +195,10 @@ export default defineConfig((configEnv) =>
       // configure your test environment
       test: {
         environment: "jsdom", // or "happy-dom"
-        setupFiles: ["./vitest.setup.ts"],
+        setupFiles: [
+          "@noma.to/qwik-testing-library/setup",
+          "@testing-library/jest-dom/vitest", // optional, for DOM matchers
+        ],
         globals: true,
       },
     }),
@@ -218,24 +221,8 @@ As the build will try to use `./src/index.ts` as the entry point, we need to cre
  */
 ```
 
-Then, create the `vitest.setup.ts` file:
-
-```ts
-// vitest.setup.ts
-
-// Configure DOM matchers to work in Vitest
-import "@testing-library/jest-dom/vitest";
-
-// This has to run before qdev.ts loads. `beforeAll` is too late
-globalThis.qTest = false; // Forces Qwik to run as if it was in a Browser
-globalThis.qRuntimeQrl = true;
-globalThis.qDev = true;
-globalThis.qInspector = false;
-```
-
-This setup will make sure that Qwik is properly configured.
-It also loads `@testing-library/jest-dom/vitest` in your test runner
-so you can use matchers like `expect(...).toBeInTheDocument()`.
+The `@noma.to/qwik-testing-library/setup` module configures Qwik globals (`qTest`, `qRuntimeQrl`, `qDev`,
+`qInspector`) for testing. It must run before any Qwik code loads, which is why it's added to `setupFiles`.
 
 By default, Qwik Testing Library cleans everything up automatically for you.
 You can opt out of this by setting the environment variable `QTL_SKIP_AUTO_CLEANUP` to `true`.
@@ -309,7 +296,7 @@ describe("<Counter />", () => {
     await user.click(incrementBtn);
 
     // assert that the counter is now 2
-    await waitFor(() => expect(screen.findByText(/count:2/)).toBeInTheDocument());
+    expect(await screen.findByText(/count:2/)).toBeInTheDocument();
   });
 })
 ```

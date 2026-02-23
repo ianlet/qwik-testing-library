@@ -13,6 +13,11 @@
       "types": "./lib-types/index.d.ts",
       "import": "./lib/index.qwik.mjs",
       "require": "./lib/index.qwik.cjs"
+    },
+    "./setup": {
+      "types": "./lib-types/setup.d.ts",
+      "import": "./lib/setup.qwik.mjs",
+      "require": "./lib/setup.qwik.cjs"
     }
   },
   "files": [
