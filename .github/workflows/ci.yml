@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["18", "20", "22"]
+        node: ["20", "22"]
         qwik: ["1.12", "1.14.1", "1.15", "1.16", "1.17", "1.18"]
         dom: ["jsdom", "happy-dom"]
         check: ["test"]
