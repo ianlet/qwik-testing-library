@@ -1,7 +1,7 @@
 {
-  "name": "my-qwik-library-name",
+  "name": "qwik-testing-library-e2e-library",
   "version": "0.0.0-semantically-released",
-  "description": "Create a Qwik library",
+  "description": "E2E tests for @noma.to/qwik-testing-library (Qwik library consumer)",
   "main": "./lib/index.qwik.mjs",
   "qwik": "./lib/index.qwik.mjs",
   "types": "./lib-types/index.d.ts",

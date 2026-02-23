@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["18", "20", "22"]
+        node: ["20", "22"]
         qwik: ["1.12", "1.14.1", "1.15", "1.16", "1.17", "1.18"]
         dom: ["jsdom", "happy-dom"]
         check: ["test"]
@@ -56,7 +56,8 @@ jobs:
           pnpm install
           pnpm --filter "{packages/qwik-testing-library}" install @builder.io/qwik@${{ matrix.qwik }}
           pnpm --filter "{packages/qwik-mock}" install @builder.io/qwik@${{ matrix.qwik }}
-          pnpm --filter "{apps/qwik-testing-library-e2e-tests}" install @builder.io/qwik@${{ matrix.qwik }}
+          pnpm --filter "{apps/qwik-testing-library-e2e-library}" install @builder.io/qwik@${{ matrix.qwik }}
+          pnpm --filter "{apps/qwik-testing-library-e2e-app}" install @builder.io/qwik@${{ matrix.qwik }} @builder.io/qwik-city@${{ matrix.qwik }}
 
       - name: ▶️ Run ${{ matrix.check }}
         run: pnpm ${{ matrix.check }}
