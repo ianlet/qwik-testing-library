@@ -90,6 +90,36 @@ jobs:
       - name: 🏗️ Build packages
         run: pnpm build
 
+  preview:
+    name: Preview Release
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: [main, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+
+      - name: 🧱 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: 📥 Download deps
+        run: pnpm install
+
+      - name: 🏗️ Build packages
+        run: pnpm build
+
+      - name: 📦 Publish preview packages
+        run: pnpm dlx pkg-pr-new publish --compact ./packages/qwik-testing-library ./packages/qwik-mock
+
   release:
     name: Release
     needs: [main, build]
