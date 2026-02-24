@@ -30,6 +30,6 @@ describe("<QwikRender />", () => {
   it("should render a list of elements", async () => {
     await render(<QwikRender items={["a", "b", "c"]} />);
 
-    expect(screen.findAllByRole("listitem")).resolves.toHaveLength(3);
+    await expect(screen.findAllByRole("listitem")).resolves.toHaveLength(3);
   });
 });

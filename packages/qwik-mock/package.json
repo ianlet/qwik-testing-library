@@ -5,14 +5,13 @@
   "repository": "https://github.com/ianlet/qwik-testing-library",
   "homepage": "https://github.com/ianlet/qwik-testing-library",
   "license": "MIT",
-  "main": "./lib/index.qwik.mjs",
-  "qwik": "./lib/index.qwik.mjs",
+  "main": "./lib/index.mjs",
   "types": "./lib-types/index.d.ts",
   "exports": {
     ".": {
       "types": "./lib-types/index.d.ts",
-      "import": "./lib/index.qwik.mjs",
-      "require": "./lib/index.qwik.cjs"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
     }
   },
   "files": [
