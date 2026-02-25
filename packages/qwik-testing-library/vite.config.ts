@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import pkg from "./package.json";
-import { qwikVite } from "@builder.io/qwik/optimizer";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const { dependencies = {}, peerDependencies = {} } = pkg as any;
@@ -11,6 +10,8 @@ export default defineConfig(() => {
   return {
     build: {
       target: "es2020",
+      outDir: "lib",
+      minify: false,
       lib: {
         entry: ["./src/index.ts", "./src/setup.ts"],
         formats: ["es", "cjs"],
@@ -30,6 +31,6 @@ export default defineConfig(() => {
         ],
       },
     },
-    plugins: [qwikVite(), tsconfigPaths()],
+    plugins: [tsconfigPaths()],
   };
 });

@@ -1,14 +1,10 @@
-import { type QRL, $, implicit$FirstArg } from "@builder.io/qwik";
+import { $, type QRL, implicit$FirstArg } from "@builder.io/qwik";
 import { type Mock, vi } from "vitest";
-
-export const mockQrl = (): QRL<Mock> => {
-  return $(vi.fn());
-};
 
 /**
  * @experimental
  *
- * Create a QRL mock that can be used in tests to verify interactions
+ * Create a QRL mock that can be used in tests to verify interactions.
  *
  * As Qwik is an async framework, you need to `resolve()` the mock before making your verifications.
  * And remember to clear the mocks before each test to start with a clean slate!
@@ -16,13 +12,12 @@ export const mockQrl = (): QRL<Mock> => {
  * @example
  * ```tsx
  * describe('<MyButton />', () => {
- *   const onClickMock = mock$(() => {});
- *
  *   beforeEach(() => {
  *     clearAllMocks();
  *   });
  *
  *   it('should call onClick$', async () => {
+ *     const onClickMock = mock$();
  *     await render(<MyButton onClick$={onClickMock} />);
  *
  *     await userEvent.click(screen.getByRole('button'));
@@ -32,6 +27,10 @@ export const mockQrl = (): QRL<Mock> => {
  * });
  * ```
  */
+export const mockQrl = (_callbackQrl: QRL<(...args: any[]) => any>): QRL<Mock> => {
+  return $(vi.fn());
+};
+
 export const mock$ = implicit$FirstArg(mockQrl);
 
 /**

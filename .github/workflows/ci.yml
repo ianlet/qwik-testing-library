@@ -117,8 +117,17 @@ jobs:
       - name: 🏗️ Build packages
         run: pnpm build
 
+      - name: 🏷️ Set preview versions
+        run: |
+          SHA=$(git rev-parse --short HEAD)
+          for pkg in ./packages/qwik-testing-library ./packages/qwik-mock; do
+            cd "$pkg"
+            jq --arg v "0.0.0-preview.$SHA" '.version = $v' package.json > tmp && mv tmp package.json
+            cd "$GITHUB_WORKSPACE"
+          done
+
       - name: 📦 Publish preview packages
-        run: pnpm dlx pkg-pr-new publish --compact ./packages/qwik-testing-library ./packages/qwik-mock
+        run: pnpm dlx pkg-pr-new publish --compact --commentWithSha --commentWithDev --packageManager=npm,pnpm,yarn ./packages/qwik-testing-library ./packages/qwik-mock
 
   release:
     name: Release
