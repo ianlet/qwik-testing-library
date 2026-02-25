@@ -4,7 +4,7 @@ import { userEvent } from "@testing-library/user-event";
 import { Counter } from "./counter";
 
 describe("<Counter />", () => {
-  const onChangeMock = mock$(() => {});
+  const onChangeMock = mock$();
 
   beforeEach(() => {
     clearAllMocks();
@@ -35,7 +35,7 @@ describe("<Counter />", () => {
       await user.click(incrementBtn);
 
       await waitFor(() =>
-        expect(onChangeMock.resolve()).resolves.toHaveBeenCalledWith(1),
+        expect(onChangeMock).toHaveBeenCalledWith(1),
       );
     });
   });
@@ -59,7 +59,7 @@ describe("<Counter />", () => {
       await user.click(decrementBtn);
 
       await waitFor(() =>
-        expect(onChangeMock.resolve()).resolves.toHaveBeenCalledWith(-1),
+        expect(onChangeMock).toHaveBeenCalledWith(-1),
       );
     });
   });
