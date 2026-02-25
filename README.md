@@ -290,7 +290,7 @@ Here's an example on how to use the `mock$` function:
 // import qwik-testing methods
 import {render, screen, waitFor} from "@noma.to/qwik-testing-library";
 // import qwik-mock methods
-import {mock$, clearAllMock} from "@noma.to/qwik-mock";
+import {clearAllMocks, mock$} from "@noma.to/qwik-mock";
 // import the userEvent methods to interact with the DOM
 import {userEvent} from "@testing-library/user-event";
 
@@ -300,9 +300,7 @@ import {Counter} from "./counter";
 // describe the test suite
 describe("<Counter />", () => {
   // initialize a mock
-  // note: the empty callback is required but currently unused
-  const onChangeMock = mock$(() => {
-  });
+  const onChangeMock = mock$();
 
   // setup beforeEach block to run before each test
   beforeEach(() => {
@@ -325,13 +323,23 @@ describe("<Counter />", () => {
       await user.click(decrementBtn);
 
       // assert that the onChange$ callback was called with the right value
-      // note: QRLs are async in Qwik, so we need to resolve them to verify interactions
       await waitFor(() =>
-        expect(onChangeMock.resolve()).resolves.toHaveBeenCalledWith(-1),
+        expect(onChangeMock).toHaveBeenCalledWith(-1),
       );
     });
   });
 })
+```
+
+You can also provide a default implementation to `mock$`:
+
+```tsx
+const onSubmitMock = mock$(() => "success");
+
+await render(<SubmitForm onSubmit$={onSubmitMock} />);
+await user.click(screen.getByRole("button", { name: "Submit" }));
+
+expect(await screen.findByText("success")).toBeInTheDocument();
 ```
 
 ### Qwik City - `server$` calls
