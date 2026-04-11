@@ -12,6 +12,7 @@
     "strict": true,
     "declaration": true,
     "declarationDir": "lib-types",
+    "rootDir": "src",
     "resolveJsonModule": true,
     "moduleResolution": "Bundler",
     "esModuleInterop": true,
