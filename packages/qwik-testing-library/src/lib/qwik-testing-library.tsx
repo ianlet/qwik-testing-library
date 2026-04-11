@@ -46,7 +46,8 @@ const mountedContainers = new Set<ComponentRef>();
 async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
   const qwik = await import("@builder.io/qwik");
 
-  let { container, baseElement = container, wrapper: Wrapper } = options;
+  let { container, baseElement = container } = options;
+  const { wrapper: Wrapper } = options;
   const { queries, serverData } = options;
 
   if (!baseElement) {
