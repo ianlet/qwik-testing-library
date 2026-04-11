@@ -13,11 +13,6 @@ updates:
       all:
         patterns:
           - "*"
-    ignore:
-      - dependency-name: "eslint"
-        versions: [">=9"]
-      - dependency-name: "@eslint/js"
-        versions: [">=10"]
 
   # Update GitHub Actions dependencies
   - package-ecosystem: "github-actions"

@@ -5,14 +5,10 @@
 // import "@noma.to/qwik-testing-library/setup";
 
 declare global {
-  // eslint-disable-next-line no-var
-  var qTest: boolean;
-  // eslint-disable-next-line no-var
-  var qRuntimeQrl: boolean;
-  // eslint-disable-next-line no-var
-  var qDev: boolean;
-  // eslint-disable-next-line no-var
-  var qInspector: boolean;
+var qTest: boolean;
+var qRuntimeQrl: boolean;
+var qDev: boolean;
+var qInspector: boolean;
 }
 
 globalThis.qTest = false; // Forces Qwik to run as if in a browser
