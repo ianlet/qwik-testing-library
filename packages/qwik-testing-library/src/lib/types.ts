@@ -4,9 +4,9 @@ import type {
   Queries,
 } from "@testing-library/dom";
 import { queries } from "@testing-library/dom";
-import type { Component, RenderOptions } from "@builder.io/qwik";
+import type { Component, RenderOptions as QwikRenderOptions } from "@builder.io/qwik";
 
-export interface Options extends RenderOptions {
+export interface RenderOptions extends QwikRenderOptions {
   container?: HTMLElement;
   baseElement?: HTMLElement;
   queries?: Queries & typeof queries;
@@ -31,3 +31,10 @@ export type ComponentRef = {
   container: HTMLElement;
   componentCleanup: () => void;
 };
+
+export type RenderHookOptions = Pick<RenderOptions, 'wrapper'>;
+
+export interface RenderHookResult<Result> {
+  result: Result;
+  unmount: () => void;
+}

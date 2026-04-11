@@ -92,6 +92,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [Setup](#setup)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
+    - [Testing Hooks (experimental)](#testing-hooks-experimental)
     - [Mocking Component Callbacks (experimental)](#mocking-component-callbacks-experimental)
     - [Qwik City - `server$` calls](#qwik-city---server-calls)
 - [Gotchas](#gotchas)
@@ -262,6 +263,109 @@ describe("<Counter />", () => {
     expect(await screen.findByText(/count:2/)).toBeInTheDocument();
   });
 })
+```
+
+### Testing Hooks (experimental)
+
+> [!WARNING]
+> This feature is under a testing phase and thus experimental.
+> Its API may change in the future, so use it at your own risk.
+
+`renderHook` lets you test custom hooks in isolation, without building a wrapper component by hand.
+This is especially useful for library authors who need to battle-test the hooks they provide to their users.
+
+```tsx
+// use-counter.tsx
+
+import { $, useSignal } from "@builder.io/qwik";
+
+export function useCounter(initial = 0) {
+  const count = useSignal(initial);
+  const increment$ = $(() => count.value++);
+
+  return { count, increment$ };
+}
+```
+
+```tsx
+// use-counter.spec.tsx
+
+import { renderHook } from "@noma.to/qwik-testing-library";
+import { useCounter } from "./use-counter";
+
+describe("useCounter", () => {
+  it("should start at 0", async () => {
+    const { result } = await renderHook(useCounter);
+
+    expect(result.count.value).toBe(0);
+  });
+
+  it("should increment", async () => {
+    const { result } = await renderHook(useCounter);
+
+    await result.increment$();
+
+    expect(result.count.value).toBe(1);
+  });
+});
+```
+
+The `result` is the direct return value of your hook callback. Because Qwik signals are stable reactive
+references, you can read and mutate them directly — no `.current` wrapper needed.
+
+#### ESLint `qwik/use-method-usage`
+
+The Qwik ESLint plugin only allows `use*` calls inside `component$` or `use*`-named functions.
+This is a known limitation — a discussion is in progress with the Qwik team to relax their ESLint rule.
+In the meantime, when you need to pass arguments to your hook, wrap it in a `use*`-named function to stay lint-clean:
+
+```tsx
+// passing the hook by reference — lint-clean
+const { result } = await renderHook(useCounter);
+
+// passing arguments — extract a use*-named function
+function useCounterFrom10() {
+  return useCounter(10);
+}
+const { result } = await renderHook(useCounterFrom10);
+```
+
+#### Providing Context
+
+If your hook depends on context, use the `wrapper` option to provide it:
+
+```tsx
+import { renderHook } from "@noma.to/qwik-testing-library";
+import { component$, createContextId, useContextProvider, useStore, Slot } from "@builder.io/qwik";
+import { useTheme } from "./use-theme";
+
+const ThemeContext = createContextId<{ mode: string }>("theme");
+
+const ThemeProvider = component$(() => {
+  useContextProvider(ThemeContext, useStore({ mode: "dark" }));
+  return <Slot />;
+});
+
+it("should read theme from context", async () => {
+  const { result } = await renderHook(useTheme, {
+    wrapper: ThemeProvider,
+  });
+
+  expect(result.mode).toBe("dark");
+});
+```
+
+#### Cleanup
+
+`renderHook` integrates with automatic cleanup, just like `render`.
+You can also call `unmount()` manually if needed:
+
+```tsx
+const { result, unmount } = await renderHook(useCounter);
+
+// ... assertions ...
+
+unmount();
 ```
 
 ### Mocking Component Callbacks (experimental)

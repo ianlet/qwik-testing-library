@@ -31,7 +31,7 @@
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
     "start": "vite --open --mode ssr",
-    "test": "vitest run components",
+    "test": "vitest run",
     "validate": "pnpm test",
     "qwik": "qwik"
   },
