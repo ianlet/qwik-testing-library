@@ -16,10 +16,8 @@ updates:
     ignore:
       - dependency-name: "eslint"
         versions: [">=9"]
-      - dependency-name: "eslint-plugin-n"
-        versions: [">=17"]
-      - dependency-name: "eslint-plugin-promise"
-        versions: [">=7"]
+      - dependency-name: "@eslint/js"
+        versions: [">=10"]
 
   # Update GitHub Actions dependencies
   - package-ecosystem: "github-actions"
