@@ -1,7 +1,13 @@
 import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
 import type { JSXOutput } from "@builder.io/qwik";
 import { getQwikLoaderScript } from "@builder.io/qwik/server";
-import type { ComponentRef, Options, Result } from "./types";
+import type {
+  ComponentRef,
+  RenderOptions,
+  RenderHookOptions,
+  RenderHookResult,
+  Result,
+} from "./types";
 
 // Patch HTMLTemplateElement.childNodes for happy-dom compatibility
 //
@@ -43,7 +49,7 @@ if (typeof process === "undefined" || !process.env?.QTL_SKIP_AUTO_CLEANUP) {
 
 const mountedContainers = new Set<ComponentRef>();
 
-async function render(ui: JSXOutput, options: Options = {}): Promise<Result> {
+async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Result> {
   const qwik = await import("@builder.io/qwik");
 
   let { container, baseElement = container } = options;
@@ -115,5 +121,26 @@ function cleanup() {
   mountedContainers.forEach(cleanupAtContainer);
 }
 
+async function renderHook<Result>(
+  callback: () => Result,
+  options: RenderHookOptions = {},
+): Promise<RenderHookResult<Result>> {
+  const { component$, noSerialize } = await import("@builder.io/qwik");
+
+  const callbackRef = noSerialize(callback);
+  const resultRef = noSerialize({ current: undefined as Result | undefined });
+
+  const TestComponent = component$(() => {
+    resultRef!.current = callbackRef!();
+    return <></>;
+  });
+
+  const { unmount } = await render(<TestComponent />, {
+    wrapper: options.wrapper,
+  });
+
+  return { result: resultRef!.current as Result, unmount };
+}
+
 export * from "@testing-library/dom";
-export { cleanup, render };
+export { cleanup, render, renderHook };
