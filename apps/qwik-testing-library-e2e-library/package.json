@@ -48,7 +48,7 @@
     "eslint-plugin-qwik": "1.19.2",
     "globals": "^17.4.0",
     "happy-dom": "^20.8.9",
-    "jsdom": "^29.0.1",
+    "jsdom": "^29.0.2",
     "prettier": "3.8.2",
     "typescript": "6.0.2",
     "typescript-eslint": "^8.58.1",
