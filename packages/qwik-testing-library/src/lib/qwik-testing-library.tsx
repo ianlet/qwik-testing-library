@@ -125,12 +125,13 @@ async function renderHook<Result>(
   callback: () => Result,
   options: RenderHookOptions = {},
 ): Promise<RenderHookResult<Result>> {
-  const { component$ } = await import("@builder.io/qwik");
+  const { component$, noSerialize } = await import("@builder.io/qwik");
 
-  let hookResult: Result;
+  const callbackRef = noSerialize(callback);
+  const resultRef = noSerialize({ current: undefined as Result | undefined });
 
   const TestComponent = component$(() => {
-    hookResult = callback();
+    resultRef!.current = callbackRef!();
     return <></>;
   });
 
@@ -138,7 +139,7 @@ async function renderHook<Result>(
     wrapper: options.wrapper,
   });
 
-  return { result: hookResult!, unmount };
+  return { result: resultRef!.current as Result, unmount };
 }
 
 export * from "@testing-library/dom";
