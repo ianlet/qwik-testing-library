@@ -1,4 +1,4 @@
-import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
+import { configure, getQueriesForElement, prettyDOM } from "@testing-library/dom";
 import type { JSXOutput } from "@qwik.dev/core";
 import { getQwikLoaderScript } from "@qwik.dev/core/server";
 import type {
@@ -78,35 +78,66 @@ async function runVisibleTasks(
   return ran;
 }
 
-// Deterministically wait for pending render work to settle. `waitForDrain` from
-// the testing package races (its poll isn't awaited, so it can return before a
-// render scheduled on a macrotask/raf begins). This yields to the macrotask queue
-// and awaits the container's render promise until no further render is pending.
+// Wait for pending render work to settle. Qwik v2 runs its render/reactive chores
+// as microtasks, so this awaits the container's render promise and yields
+// microtasks until no further render is pending. It follows multi-hop chains
+// (signal -> computed -> conditional render) and, being timer-free, stays fast
+// even across many renders. (`waitForDrain` from the testing package can't be used
+// here: its internal poll isn't awaited, so it races and returns early.)
 async function settle(container: QwikContainer): Promise<void> {
-  let idleTicks = 0;
-  for (let i = 0; i < 200 && idleTicks < 3; i++) {
+  let idle = 0;
+  // A handful of consecutive idle microtasks means the reactive graph has quiesced.
+  for (let i = 0; i < 1000 && idle < 5; i++) {
     if (container.$renderPromise$) {
       await container.$renderPromise$;
-      idleTicks = 0;
+      idle = 0;
     } else {
-      idleTicks++;
+      await Promise.resolve();
+      idle++;
     }
-    // Yield to the macrotask queue so render work scheduled via raf/setTimeout has
-    // a chance to begin (and set $renderPromise$) before we re-check.
-    await new Promise((resolve) => setTimeout(resolve));
   }
 }
 
-// Wait for a state change to produce a re-render, then settle. Visible tasks set
-// signals whose re-render is scheduled on a macrotask a few ticks later; settle()
-// alone could observe "idle" before it appears, so first wait for the render to be
-// scheduled (bounded), then drain it.
-async function settleAfterChange(container: QwikContainer): Promise<void> {
+// Visible tasks (and the re-renders they schedule) run on macrotasks/raf rather
+// than microtasks, so the fast microtask settle() can't see them. This is only
+// used on renders that actually have a `useVisibleTask$`, so the common path stays
+// timer-free. Wait (bounded) for the re-render to be scheduled, then drain it.
+async function settleVisibleTasks(container: QwikContainer): Promise<void> {
+  const tick = () => new Promise((resolve) => setTimeout(resolve));
   for (let i = 0; i < 50 && !container.$renderPromise$; i++) {
-    await new Promise((resolve) => setTimeout(resolve));
+    await tick();
   }
-  await settle(container);
+  let idle = 0;
+  for (let i = 0; i < 100 && idle < 2; i++) {
+    if (container.$renderPromise$) {
+      await container.$renderPromise$;
+      idle = 0;
+    } else {
+      await tick();
+      idle++;
+    }
+  }
 }
+
+// Settle every currently-mounted container. Used as testing-library's asyncWrapper
+// so pending renders triggered by an interaction (fireEvent/userEvent/signal write)
+// are flushed before/while async queries (findBy*, waitFor) evaluate.
+async function settleAll(): Promise<void> {
+  for (const ref of mountedContainers) {
+    if (ref.qwikContainer) {
+      await settle(ref.qwikContainer);
+    }
+  }
+}
+
+// Drain pending renders while async queries (findBy*, waitFor) run, so updates
+// scheduled by an interaction are reflected without each test flushing manually.
+configure({
+  asyncWrapper: async (cb) => {
+    await settleAll();
+    return cb();
+  },
+});
 
 async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Result> {
   const qwik = await import("@qwik.dev/core");
@@ -156,13 +187,17 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
   const win = doc.defaultView;
   new Function("document", "window", getQwikLoaderScript())(doc, win);
 
-  // Run `useVisibleTask$` eagerly (see runVisibleTasks), then wait for the re-render
-  // any of them scheduled to settle.
+  // Run `useVisibleTask$` eagerly (see runVisibleTasks), then drain the re-render
+  // any of them scheduled (macrotask-based; only when a visible task actually ran).
   if (await runVisibleTasks(container, win)) {
-    await settleAfterChange(qContainer);
+    await settleVisibleTasks(qContainer);
   }
 
-  mountedContainers.add({ container, componentCleanup: cleanup });
+  mountedContainers.add({
+    container,
+    componentCleanup: cleanup,
+    qwikContainer: qContainer,
+  });
 
   return {
     container,

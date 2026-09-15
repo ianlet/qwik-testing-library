@@ -30,6 +30,8 @@ export type Result = BoundFunctions<typeof queries> & {
 export type ComponentRef = {
   container: HTMLElement;
   componentCleanup: () => void;
+  /** The Qwik DOM container, used to await pending renders. */
+  qwikContainer?: { $renderPromise$?: Promise<unknown> | null };
 };
 
 export type RenderHookOptions = Pick<RenderOptions, 'wrapper'>;
