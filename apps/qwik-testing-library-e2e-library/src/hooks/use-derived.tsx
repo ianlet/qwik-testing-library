@@ -1,4 +1,4 @@
-import { type Signal, useSignal, useTask$ } from "@builder.io/qwik";
+import { type Signal, useSignal, useTask$ } from "@qwik.dev/core";
 
 export function useDerived(source: Signal<number>) {
   const derived = useSignal<string>();

@@ -1,4 +1,4 @@
-import { component$, type QRL } from "@builder.io/qwik";
+import { component$, type QRL } from "@qwik.dev/core";
 
 interface DualActionProps {
   onPrimary$: QRL<() => void>;

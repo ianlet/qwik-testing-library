@@ -1,4 +1,4 @@
-import { $, useSignal } from "@builder.io/qwik";
+import { $, useSignal } from "@qwik.dev/core";
 
 export function useCounter(initial = 0) {
   const count = useSignal(initial);

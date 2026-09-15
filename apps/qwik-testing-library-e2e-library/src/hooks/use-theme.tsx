@@ -1,4 +1,4 @@
-import { createContextId, useContext } from "@builder.io/qwik";
+import { createContextId, useContext } from "@qwik.dev/core";
 
 export const ThemeContext = createContextId<{ mode: string }>("theme");
 

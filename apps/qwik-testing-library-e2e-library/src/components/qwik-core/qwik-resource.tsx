@@ -3,7 +3,7 @@ import {
   Resource,
   useResource$,
   useSignal,
-} from "@builder.io/qwik";
+} from "@qwik.dev/core";
 
 function getResource(value: number): Promise<string> {
   return Promise.resolve("resource-" + value);

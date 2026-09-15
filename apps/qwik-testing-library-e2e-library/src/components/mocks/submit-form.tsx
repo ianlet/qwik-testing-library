@@ -1,4 +1,4 @@
-import { $, component$, type QRL, useSignal } from "@builder.io/qwik";
+import { $, component$, type QRL, useSignal } from "@qwik.dev/core";
 
 interface SubmitFormProps {
   onSubmit$: QRL<() => string>;

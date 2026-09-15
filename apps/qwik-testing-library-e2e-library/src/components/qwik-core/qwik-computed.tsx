@@ -1,4 +1,4 @@
-import { component$, useComputed$, useSignal } from "@builder.io/qwik";
+import { component$, useComputed$, useSignal } from "@qwik.dev/core";
 
 export const QwikComputed = component$(() => {
   const sig = useSignal(0);

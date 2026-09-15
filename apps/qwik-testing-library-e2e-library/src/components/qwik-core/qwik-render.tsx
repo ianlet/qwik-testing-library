@@ -1,4 +1,4 @@
-import { $, component$, PropsOf, Slot, useSignal } from "@builder.io/qwik";
+import { $, component$, PropsOf, Slot, useSignal } from "@qwik.dev/core";
 
 interface QwikRenderProps extends PropsOf<"div"> {
   myProp?: string;

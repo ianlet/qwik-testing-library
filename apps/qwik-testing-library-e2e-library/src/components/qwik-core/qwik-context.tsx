@@ -4,7 +4,7 @@ import {
   useContext,
   useContextProvider,
   useStore,
-} from "@builder.io/qwik";
+} from "@qwik.dev/core";
 
 const MyContext = createContextId<{ foo: string }>("my-context");
 

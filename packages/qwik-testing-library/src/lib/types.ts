@@ -4,7 +4,7 @@ import type {
   Queries,
 } from "@testing-library/dom";
 import { queries } from "@testing-library/dom";
-import type { Component, RenderOptions as QwikRenderOptions } from "@builder.io/qwik";
+import type { Component, RenderOptions as QwikRenderOptions } from "@qwik.dev/core";
 
 export interface RenderOptions extends QwikRenderOptions {
   container?: HTMLElement;

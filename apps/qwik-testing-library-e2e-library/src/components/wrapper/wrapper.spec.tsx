@@ -1,5 +1,5 @@
 import { render, screen } from "@noma.to/qwik-testing-library";
-import { component$, Slot } from "@builder.io/qwik";
+import { component$, Slot } from "@qwik.dev/core";
 
 const MyComponent = component$(() => <div>my-component</div>);
 

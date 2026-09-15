@@ -36,16 +36,16 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^1.19.2",
     "@eslint/js": "10",
     "@noma.to/qwik-mock": "workspace:*",
     "@noma.to/qwik-testing-library": "workspace:*",
+    "@qwik.dev/core": "2.0.0-beta.43",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "25.6.0",
     "@vitest/ui": "^4.1.4",
     "eslint": "10",
-    "eslint-plugin-qwik": "1.19.2",
+    "eslint-plugin-qwik": "2.0.0-beta.43",
     "globals": "^17.4.0",
     "happy-dom": "^20.8.9",
     "jsdom": "^29.0.2",

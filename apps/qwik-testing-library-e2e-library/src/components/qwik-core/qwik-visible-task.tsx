@@ -1,4 +1,4 @@
-import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useVisibleTask$ } from "@qwik.dev/core";
 
 export const QwikVisibleTask = component$(() => {
   const sig = useSignal(0);

@@ -1,4 +1,4 @@
-import { $, component$, QRL, useSignal } from "@builder.io/qwik";
+import { $, component$, QRL, useSignal } from "@qwik.dev/core";
 
 interface CounterProps {
   onChange$: QRL<(value: number) => void>;

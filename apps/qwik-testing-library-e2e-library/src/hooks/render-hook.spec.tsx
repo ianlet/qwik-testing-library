@@ -5,7 +5,7 @@ import {
   useContextProvider,
   useSignal,
   useStore,
-} from "@builder.io/qwik";
+} from "@qwik.dev/core";
 import { useCounter } from "./use-counter";
 import { useStoreValue } from "./use-store-value";
 import { useDoubled } from "./use-doubled";

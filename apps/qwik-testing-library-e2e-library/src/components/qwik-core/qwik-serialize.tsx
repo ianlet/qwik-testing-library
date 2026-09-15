@@ -4,7 +4,7 @@ import {
   NoSerialize,
   useSignal,
   useVisibleTask$,
-} from "@builder.io/qwik";
+} from "@qwik.dev/core";
 
 class MyClass {
   constructor(private _foo: string) {}

@@ -3,6 +3,8 @@
 /lib
 /lib-types
 /server
+# Stub emitted by the Qwik Router vite plugin during SSR builds/tests
+/dummy-non-existing-folder
 
 # Development
 node_modules

@@ -132,7 +132,9 @@ should be installed as one of your project's `devDependencies`:
 npm install --save-dev @noma.to/qwik-testing-library @testing-library/dom
 ```
 
-This library supports `qwik` versions `1.12.0` and above and `@testing-library/dom` versions `10.1.0` and above.
+This library supports Qwik v2 (`@qwik.dev/core` `2.0.0-beta` and above) and `@testing-library/dom` versions `10.1.0` and above.
+
+> **Using Qwik v1 (`@builder.io/qwik`)?** Use a version of this library published before Qwik v2 support was added.
 
 You may also be interested in installing `@testing-library/jest-dom` and `@testing-library/user-event` so you can
 use [the custom jest matchers][jest-dom] and [the user event library][user-event] to test interactions with the DOM.

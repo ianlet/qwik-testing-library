@@ -1,12 +1,17 @@
 import "@testing-library/jest-dom/vitest";
-import { beforeEach, vi } from "vitest";
+import { beforeEach } from "vitest";
 
 beforeEach(() => {
-  const mockIntersectionObserver = vi.fn();
-  mockIntersectionObserver.mockReturnValue({
-    observe: () => null,
-    unobserve: () => null,
-    disconnect: () => null,
-  });
-  window.IntersectionObserver = mockIntersectionObserver;
+  // Qwik instantiates `new IntersectionObserver()` for visible tasks. The testing
+  // library runs `useVisibleTask$` directly, so a no-op observer is enough here.
+  // (Vitest 4 no longer allows `mockReturnValue` on a mock invoked with `new`, so
+  // provide a class.)
+  window.IntersectionObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  } as unknown as typeof IntersectionObserver;
 });
