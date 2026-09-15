@@ -103,7 +103,24 @@ async function settle(container: QwikContainer): Promise<void> {
 // used on renders that actually have a `useVisibleTask$`, so the common path stays
 // timer-free. Wait (bounded) for the re-render to be scheduled, then drain it.
 async function settleVisibleTasks(container: QwikContainer): Promise<void> {
-  const tick = () => new Promise((resolve) => setTimeout(resolve));
+  // A macrotask tick — but scheduled via MessageChannel rather than setTimeout. Specs that call
+  // `vi.useFakeTimers()` freeze setTimeout, which would deadlock this loop (render() never
+  // resolves). MessageChannel is still a real macrotask (so it observes the visible-task
+  // re-renders that microtasks can't) yet fake timers don't touch it — this mirrors Qwik's own
+  // `createMacroTask`. Falls back to setTimeout where MessageChannel is unavailable.
+  const tick: () => Promise<void> =
+    typeof MessageChannel !== 'undefined'
+      ? () =>
+          new Promise((resolve) => {
+            const channel = new MessageChannel();
+            channel.port1.onmessage = () => {
+              channel.port1.close();
+              channel.port2.close();
+              resolve();
+            };
+            channel.port2.postMessage(null);
+          })
+      : () => new Promise((resolve) => setTimeout(resolve));
   for (let i = 0; i < 50 && !container.$renderPromise$; i++) {
     await tick();
   }
