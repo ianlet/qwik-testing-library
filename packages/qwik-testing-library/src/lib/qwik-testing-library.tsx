@@ -183,50 +183,84 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
   // Wrap the component under test if a wrapper is provided
   const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
 
-  const { cleanup } = await qwik.render(container, wrappedUi, { serverData });
-  const qContainer = getDomContainer(container) as unknown as QwikContainer;
-  // Wait for the deferred render work to settle so the DOM is fully materialized
-  // before queries run.
-  await settle(qContainer);
-
-  // Load the Qwik loader AFTER rendering: Qwik collects the event names it needs
-  // to listen for (on `window._qwikEv`) while rendering, and the loader wires up
-  // its delegated listeners from that list. Injecting it earlier would miss them.
-  // The loader is what routes real DOM events (fireEvent/userEvent) to Qwik's
-  // client-side handlers stored on each element's `_qDispatch`.
   const doc = baseElement.ownerDocument;
   const win = doc.defaultView;
 
-  // When the tree has a `useVisibleTask$`, the loader creates its own IntersectionObserver
-  // to delegate `qvisible`. In tests it observes nothing (client renders store the handler on
-  // `_qDispatch`, not the `q-e:qvisible` attribute the loader scans — see hasVisibleTasks), so
-  // it's a pure artifact. But a spec that stubs `IntersectionObserver` (vi.stubGlobal) to count
-  // instances would count this one too, inflating the count. Neutralize it for the duration of
-  // the loader run so specs only see the observers their own component created; restore the real
-  // (or stubbed) constructor immediately after. This doesn't touch the loader's click/input
-  // delegation, only its intersection observer.
-  const win_ = win as unknown as { IntersectionObserver?: unknown } | null;
-  const realIntersectionObserver = win_?.IntersectionObserver;
-  if (win_ && realIntersectionObserver) {
-    win_.IntersectionObserver = class {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-      takeRecords() {
-        return [];
-      }
+  // Defer `window.requestAnimationFrame` for the duration of render()/settling. Qwik runs its own
+  // deferred work — including `useVisibleTask$` execution — through the platform scheduler (a
+  // setTimeout), not `window.rAF`. settleVisibleTasks drains that by ticking the timer queue, which
+  // also fires any app-scheduled rAF callbacks (happy-dom/jsdom back rAF with a timer). A component
+  // whose visible task coexists with an rAF side effect — e.g. an exit-animation engine that
+  // unmounts a closing layer on the next frame — would otherwise have that side effect run *during*
+  // render(), collapsing the just-mounted state a test needs to observe. Capture the callbacks here
+  // and replay them on a real frame once settled, so they fire after render() returns (during the
+  // test's awaits), exactly as a real animation frame would.
+  const rafWin = win as
+    | (Window & { requestAnimationFrame: (cb: FrameRequestCallback) => number })
+    | null;
+  const realRaf = rafWin?.requestAnimationFrame?.bind(rafWin) ?? null;
+  const capturedRafCbs: FrameRequestCallback[] = [];
+  if (rafWin && realRaf) {
+    rafWin.requestAnimationFrame = (cb: FrameRequestCallback) => {
+      capturedRafCbs.push(cb);
+      return capturedRafCbs.length;
     };
   }
-  new Function("document", "window", getQwikLoaderScript())(doc, win);
-  if (win_ && realIntersectionObserver) {
-    win_.IntersectionObserver = realIntersectionObserver;
-  }
 
-  // If the tree has a `useVisibleTask$`, drain the macrotask-scheduled run qwik
-  // queued for it (settle() only sees microtasks). We wait for qwik's own run
-  // rather than invoking the handler — see hasVisibleTasks() for why.
-  if (hasVisibleTasks(container)) {
-    await settleVisibleTasks(qContainer);
+  let cleanup!: () => void;
+  let qContainer!: QwikContainer;
+  try {
+    ({ cleanup } = await qwik.render(container, wrappedUi, { serverData }));
+    qContainer = getDomContainer(container) as unknown as QwikContainer;
+    // Wait for the deferred render work to settle so the DOM is fully materialized
+    // before queries run.
+    await settle(qContainer);
+
+    // Load the Qwik loader AFTER rendering: Qwik collects the event names it needs
+    // to listen for (on `window._qwikEv`) while rendering, and the loader wires up
+    // its delegated listeners from that list. Injecting it earlier would miss them.
+    // The loader is what routes real DOM events (fireEvent/userEvent) to Qwik's
+    // client-side handlers stored on each element's `_qDispatch`.
+    //
+    // When the tree has a `useVisibleTask$`, the loader creates its own IntersectionObserver
+    // to delegate `qvisible`. In tests it observes nothing (client renders store the handler on
+    // `_qDispatch`, not the `q-e:qvisible` attribute the loader scans — see hasVisibleTasks), so
+    // it's a pure artifact. But a spec that stubs `IntersectionObserver` (vi.stubGlobal) to count
+    // instances would count this one too, inflating the count. Neutralize it for the duration of
+    // the loader run so specs only see the observers their own component created; restore the real
+    // (or stubbed) constructor immediately after. This doesn't touch the loader's click/input
+    // delegation, only its intersection observer.
+    const win_ = win as unknown as { IntersectionObserver?: unknown } | null;
+    const realIntersectionObserver = win_?.IntersectionObserver;
+    if (win_ && realIntersectionObserver) {
+      win_.IntersectionObserver = class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+        takeRecords() {
+          return [];
+        }
+      };
+    }
+    new Function("document", "window", getQwikLoaderScript())(doc, win);
+    if (win_ && realIntersectionObserver) {
+      win_.IntersectionObserver = realIntersectionObserver;
+    }
+
+    // If the tree has a `useVisibleTask$`, drain the macrotask-scheduled run qwik
+    // queued for it (settle() only sees microtasks). We wait for qwik's own run
+    // rather than invoking the handler — see hasVisibleTasks() for why.
+    if (hasVisibleTasks(container)) {
+      await settleVisibleTasks(qContainer);
+    }
+  } finally {
+    // Restore rAF and replay whatever the app queued, on a real frame after render() has settled.
+    if (rafWin && realRaf) {
+      rafWin.requestAnimationFrame = realRaf;
+      for (const cb of capturedRafCbs) {
+        realRaf(cb);
+      }
+    }
   }
 
   mountedContainers.add({
