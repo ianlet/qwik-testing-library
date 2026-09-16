@@ -55,27 +55,18 @@ type QDispatchElement = Element & {
 };
 type QwikContainer = { $renderPromise$?: Promise<unknown> | null };
 
-// Client-rendered components store `useVisibleTask$` handlers on
-// `element._qDispatch["e:qvisible"]` but (unlike SSR) don't emit the
-// `q-e:qvisible` attribute the loader scans for. Invoke them directly to simulate
-// the elements becoming visible. Returns true if any task ran.
-async function runVisibleTasks(
-  root: Element,
-  win: (Window & typeof globalThis) | null,
-): Promise<boolean> {
-  const EventCtor = win?.Event ?? Event;
+// Detect whether the rendered tree contains a `useVisibleTask$`. Client-rendered
+// components store the handler on `element._qDispatch["e:qvisible"]` (unlike SSR,
+// they don't emit the `q-e:qvisible` attribute the loader scans for).
+//
+// We only *detect* here — we must not invoke the handler. Qwik already schedules the
+// visible task to run on a macrotask during render; invoking `_qDispatch` ourselves
+// would run it a *second* time (the classic double-fire: a `useVisibleTask$` side
+// effect happening twice per mount). Instead, when a visible task is present we let
+// settleVisibleTasks() drain qwik's own scheduled run — the single, real execution.
+function hasVisibleTasks(root: Element): boolean {
   const elements = [root, ...root.querySelectorAll("*")] as QDispatchElement[];
-  let ran = false;
-  for (const el of elements) {
-    const handler = el._qDispatch?.["e:qvisible"];
-    if (!handler) continue;
-    const handlers = Array.isArray(handler) ? handler : [handler];
-    for (const h of handlers) {
-      await h(new EventCtor("qvisible"), el);
-      ran = true;
-    }
-  }
-  return ran;
+  return elements.some((el) => el._qDispatch?.["e:qvisible"] != null);
 }
 
 // Wait for pending render work to settle. Qwik v2 runs its render/reactive chores
@@ -103,13 +94,16 @@ async function settle(container: QwikContainer): Promise<void> {
 // used on renders that actually have a `useVisibleTask$`, so the common path stays
 // timer-free. Wait (bounded) for the re-render to be scheduled, then drain it.
 async function settleVisibleTasks(container: QwikContainer): Promise<void> {
-  // A macrotask tick — but scheduled via MessageChannel rather than setTimeout. Specs that call
-  // `vi.useFakeTimers()` freeze setTimeout, which would deadlock this loop (render() never
-  // resolves). MessageChannel is still a real macrotask (so it observes the visible-task
-  // re-renders that microtasks can't) yet fake timers don't touch it — this mirrors Qwik's own
-  // `createMacroTask`. Falls back to setTimeout where MessageChannel is unavailable.
+  // A macrotask tick. Prefer setTimeout: it matches the timing of the re-render Qwik actually
+  // schedules, so we don't return before it lands. But `vi.useFakeTimers()` freezes setTimeout,
+  // which would deadlock this loop (render() never resolves). Only in that case fall back to a
+  // MessageChannel macrotask — not faked, so it still resolves (and under fake timers the
+  // re-render is frozen anyway, so there's nothing slower to wait for).
+  const viGlobal = (globalThis as { vi?: { isFakeTimers?: () => boolean } }).vi;
+  const fakeTimers =
+    typeof viGlobal?.isFakeTimers === "function" && viGlobal.isFakeTimers();
   const tick: () => Promise<void> =
-    typeof MessageChannel !== 'undefined'
+    fakeTimers && typeof MessageChannel !== "undefined"
       ? () =>
           new Promise((resolve) => {
             const channel = new MessageChannel();
@@ -204,9 +198,10 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
   const win = doc.defaultView;
   new Function("document", "window", getQwikLoaderScript())(doc, win);
 
-  // Run `useVisibleTask$` eagerly (see runVisibleTasks), then drain the re-render
-  // any of them scheduled (macrotask-based; only when a visible task actually ran).
-  if (await runVisibleTasks(container, win)) {
+  // If the tree has a `useVisibleTask$`, drain the macrotask-scheduled run qwik
+  // queued for it (settle() only sees microtasks). We wait for qwik's own run
+  // rather than invoking the handler — see hasVisibleTasks() for why.
+  if (hasVisibleTasks(container)) {
     await settleVisibleTasks(qContainer);
   }
 
