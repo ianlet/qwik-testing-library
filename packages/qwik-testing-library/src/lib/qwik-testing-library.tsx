@@ -196,7 +196,31 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
   // client-side handlers stored on each element's `_qDispatch`.
   const doc = baseElement.ownerDocument;
   const win = doc.defaultView;
+
+  // When the tree has a `useVisibleTask$`, the loader creates its own IntersectionObserver
+  // to delegate `qvisible`. In tests it observes nothing (client renders store the handler on
+  // `_qDispatch`, not the `q-e:qvisible` attribute the loader scans — see hasVisibleTasks), so
+  // it's a pure artifact. But a spec that stubs `IntersectionObserver` (vi.stubGlobal) to count
+  // instances would count this one too, inflating the count. Neutralize it for the duration of
+  // the loader run so specs only see the observers their own component created; restore the real
+  // (or stubbed) constructor immediately after. This doesn't touch the loader's click/input
+  // delegation, only its intersection observer.
+  const win_ = win as unknown as { IntersectionObserver?: unknown } | null;
+  const realIntersectionObserver = win_?.IntersectionObserver;
+  if (win_ && realIntersectionObserver) {
+    win_.IntersectionObserver = class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+      takeRecords() {
+        return [];
+      }
+    };
+  }
   new Function("document", "window", getQwikLoaderScript())(doc, win);
+  if (win_ && realIntersectionObserver) {
+    win_.IntersectionObserver = realIntersectionObserver;
+  }
 
   // If the tree has a `useVisibleTask$`, drain the macrotask-scheduled run qwik
   // queued for it (settle() only sees microtasks). We wait for qwik's own run
