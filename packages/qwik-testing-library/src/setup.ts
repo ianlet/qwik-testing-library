@@ -9,7 +9,15 @@ var qTest: boolean;
 var qRuntimeQrl: boolean;
 var qDev: boolean;
 var qInspector: boolean;
+var __EXPERIMENTAL__: Record<string, boolean>;
 }
+
+// Qwik v2's optimizer replaces build-time `__EXPERIMENTAL__.<feature>` references with true/false
+// during its transform. Vitest never runs that transform against the prebuilt core in node_modules,
+// so the core (e.g. `error-boundary.js`) reads a raw `__EXPERIMENTAL__` global and throws
+// `__EXPERIMENTAL__ is not defined` on import. Define it here (before the core loads, like the other
+// globals below) — an empty object means every experimental feature is off, matching a default build.
+globalThis.__EXPERIMENTAL__ = globalThis.__EXPERIMENTAL__ ?? {};
 
 // Qwik v2 branches its internal DOM operations on `qTest`: when `true`, it reads
 // and writes through the container's own document (the jsdom/happy-dom document
