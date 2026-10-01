@@ -55,15 +55,51 @@ type QDispatchElement = Element & {
 };
 type QwikContainer = { $renderPromise$?: Promise<unknown> | null };
 
-// Detect whether the rendered tree contains a `useVisibleTask$`. Client-rendered
-// components store the handler on `element._qDispatch["e:qvisible"]` (unlike SSR,
-// they don't emit the `q-e:qvisible` attribute the loader scans for).
-//
-// We only *detect* here — we must not invoke the handler. Qwik already schedules the
-// visible task to run on a macrotask during render; invoking `_qDispatch` ourselves
-// would run it a *second* time (the classic double-fire: a `useVisibleTask$` side
-// effect happening twice per mount). Instead, when a visible task is present we let
-// settleVisibleTasks() drain qwik's own scheduled run — the single, real execution.
+// The IntersectionObserver handed to the Qwik loader (see render()). Since Qwik
+// 2.0.0-beta.45 (QwikDev/qwik cceadf346) a client-rendered `useVisibleTask$` with the
+// default `intersection-observer` strategy no longer runs on its own: the element gets a
+// `q-e:qvisible` attribute and the task waits for the loader's IntersectionObserver to
+// dispatch `qvisible`. jsdom/happy-dom have no layout, so a real observer never reports an
+// intersection and the task would never run. Treat every observed element as visible —
+// what a test that mounts a component means — and report it on a microtask, like a real
+// observer's asynchronous first callback. The loader unobserves after dispatching, and
+// Qwik's task handler only performs the initial run, so each task still runs exactly once.
+class AlwaysVisibleIntersectionObserver {
+  #disconnected = false;
+
+  constructor(private readonly callback: IntersectionObserverCallback) {}
+
+  observe(target: Element): void {
+    queueMicrotask(() => {
+      if (this.#disconnected) return;
+      const rect = target.getBoundingClientRect();
+      const entry = {
+        target,
+        isIntersecting: true,
+        intersectionRatio: 1,
+        boundingClientRect: rect,
+        intersectionRect: rect,
+        rootBounds: null,
+        time: 0,
+      } as IntersectionObserverEntry;
+      this.callback([entry], this as unknown as IntersectionObserver);
+    });
+  }
+
+  unobserve(): void {}
+
+  disconnect(): void {
+    this.#disconnected = true;
+  }
+
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+}
+
+// Detect whether the rendered tree contains a `useVisibleTask$`, so render() only pays
+// for the macrotask drain in settleVisibleTasks() when there is one. Client-rendered
+// components store the handler on `element._qDispatch["e:qvisible"]`.
 function hasVisibleTasks(root: Element): boolean {
   const elements = [root, ...root.querySelectorAll("*")] as QDispatchElement[];
   return elements.some((el) => el._qDispatch?.["e:qvisible"] != null);
@@ -222,34 +258,21 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
     // The loader is what routes real DOM events (fireEvent/userEvent) to Qwik's
     // client-side handlers stored on each element's `_qDispatch`.
     //
-    // When the tree has a `useVisibleTask$`, the loader creates its own IntersectionObserver
-    // to delegate `qvisible`. In tests it observes nothing (client renders store the handler on
-    // `_qDispatch`, not the `q-e:qvisible` attribute the loader scans — see hasVisibleTasks), so
-    // it's a pure artifact. But a spec that stubs `IntersectionObserver` (vi.stubGlobal) to count
-    // instances would count this one too, inflating the count. Neutralize it for the duration of
-    // the loader run so specs only see the observers their own component created; restore the real
-    // (or stubbed) constructor immediately after. This doesn't touch the loader's click/input
-    // delegation, only its intersection observer.
-    const win_ = win as unknown as { IntersectionObserver?: unknown } | null;
-    const realIntersectionObserver = win_?.IntersectionObserver;
-    if (win_ && realIntersectionObserver) {
-      win_.IntersectionObserver = class {
-        observe() {}
-        unobserve() {}
-        disconnect() {}
-        takeRecords() {
-          return [];
-        }
-      };
-    }
-    new Function("document", "window", getQwikLoaderScript())(doc, win);
-    if (win_ && realIntersectionObserver) {
-      win_.IntersectionObserver = realIntersectionObserver;
-    }
+    // The loader delegates `qvisible` (which starts a `useVisibleTask$`) through an
+    // IntersectionObserver it creates lazily — at load, and again whenever Qwik mounts a new
+    // `q-e:qvisible` element later. Pass it AlwaysVisibleIntersectionObserver as a parameter:
+    // the loader's bare `IntersectionObserver` reference resolves to it instead of the global,
+    // so visible tasks run (also for elements mounted after an interaction) and a spec that
+    // stubs the global `IntersectionObserver` to count instances never counts the loader's.
+    new Function(
+      "document",
+      "window",
+      "IntersectionObserver",
+      getQwikLoaderScript(),
+    )(doc, win, AlwaysVisibleIntersectionObserver);
 
-    // If the tree has a `useVisibleTask$`, drain the macrotask-scheduled run qwik
-    // queued for it (settle() only sees microtasks). We wait for qwik's own run
-    // rather than invoking the handler — see hasVisibleTasks() for why.
+    // If the tree has a `useVisibleTask$`, drain its run and the re-render it schedules
+    // (settle() only sees microtasks).
     if (hasVisibleTasks(container)) {
       await settleVisibleTasks(qContainer);
     }
