@@ -16,6 +16,12 @@ globalThis.qRuntimeQrl = true;
 globalThis.qDev = true;
 globalThis.qInspector = false;
 
+// Loading @qwik.dev/core/testing takes about two seconds per test file. Preloading it here keeps
+// that cost out of the first test's timeout.
+if (typeof beforeAll === "function") {
+  beforeAll(() => import("@qwik.dev/core/testing"));
+}
+
 // Export to mark this as a module (required for declare global)
 // Named export prevents tree-shaking
 export const __qwikSetupComplete = true;
