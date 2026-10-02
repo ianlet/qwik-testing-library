@@ -209,9 +209,6 @@ importers:
       vite:
         specifier: 8.0.8
         version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.2)(jiti@2.4.2)(less@4.5.1)(sass@1.97.3)(stylus@0.62.0)
-      vite-tsconfig-paths:
-        specifier: ^6.1.1
-        version: 6.1.1(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.2)(jiti@2.4.2)(less@4.5.1)(sass@1.97.3)(stylus@0.62.0))
       vitest:
         specifier: ^4.1.4
         version: 4.1.4(@types/node@25.6.0)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@30.1.1)(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.2)(jiti@2.4.2)(less@4.5.1)(sass@1.97.3)(stylus@0.62.0))

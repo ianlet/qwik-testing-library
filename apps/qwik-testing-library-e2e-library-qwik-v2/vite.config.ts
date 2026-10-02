@@ -1,46 +1,21 @@
-import { defineConfig } from "vite";
-import pkg from "./package.json";
+import { defineConfig } from "vitest/config";
 import { qwikVite } from "@qwik.dev/core/optimizer";
-import tsconfigPaths from "vite-tsconfig-paths";
 
-const { dependencies = {}, peerDependencies = {} } = pkg as any;
-const makeRegex = (dep) => new RegExp(`^${dep}(/.*)?$`);
-const excludeAll = (obj) => Object.keys(obj).map(makeRegex);
-
-// Support both jsdom and happy-dom via TEST_DOM env variable
-const testEnvironment = process.env.TEST_DOM || "happy-dom";
-
-export default defineConfig(() => {
-  return {
-    build: {
-      target: "es2020",
-      lib: {
-        entry: "./src/index.ts",
-        formats: ["es", "cjs"],
-        fileName: (format, entryName) =>
-          `${entryName}.qwik.${format === "es" ? "mjs" : "cjs"}`,
-      },
-      rollupOptions: {
-        output: {
-          preserveModules: true,
-          preserveModulesRoot: "src",
-        },
-        // externalize deps that shouldn't be bundled into the library
-        external: [
-          /^node:.*/,
-          ...excludeAll(dependencies),
-          ...excludeAll(peerDependencies),
-        ],
-      },
-    },
-    plugins: [qwikVite(), tsconfigPaths()],
-    test: {
-      environment: testEnvironment,
-      setupFiles: [
-        "@noma.to/qwik-testing-library/setup/qwik-v2",
-        "./vitest.setup.ts",
-      ],
-      globals: true,
-    },
-  };
+// Runs the specs shared with Qwik v1, plus the Qwik v2-only specs in ./src.
+// qwikVite resolves the shared specs' @builder.io/qwik imports to @qwik.dev/core.
+export default defineConfig({
+  plugins: [qwikVite()],
+  test: {
+    // Support both jsdom and happy-dom via TEST_DOM env variable
+    environment: process.env.TEST_DOM || "happy-dom",
+    include: [
+      "src/**/*.spec.tsx",
+      "../qwik-testing-library-e2e-library/src/**/*.spec.tsx",
+    ],
+    setupFiles: [
+      "@noma.to/qwik-testing-library/setup/qwik-v2",
+      "./vitest.setup.ts",
+    ],
+    globals: true,
+  },
 });

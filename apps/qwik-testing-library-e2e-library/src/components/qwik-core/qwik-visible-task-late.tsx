@@ -1,4 +1,4 @@
-import { component$, useSignal, useVisibleTask$ } from "@qwik.dev/core";
+import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 
 // Counts every run of its visible task on a module-level counter, so a spec can
 // assert the task ran exactly once per mount.

@@ -1,40 +1,15 @@
 {
   "name": "qwik-testing-library-e2e-library-qwik-v2",
-  "version": "0.0.0-semantically-released",
+  "private": true,
   "description": "E2E tests for @noma.to/qwik-testing-library (Qwik v2 library consumer)",
-  "main": "./lib/index.qwik.mjs",
-  "qwik": "./lib/index.qwik.mjs",
-  "types": "./lib-types/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./lib-types/index.d.ts",
-      "import": "./lib/index.qwik.mjs",
-      "require": "./lib/index.qwik.cjs"
-    }
-  },
-  "files": [
-    "lib",
-    "lib-types"
-  ],
-  "engines": {
-    "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
-  },
-  "private": false,
   "type": "module",
   "scripts": {
-    "build": "qwik build",
-    "build.lib": "vite build --mode lib",
-    "build.types": "tsc --emitDeclarationOnly",
-    "dev": "vite --mode ssr",
-    "dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "start": "vite --open --mode ssr",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "validate": "pnpm typecheck && pnpm test",
-    "qwik": "qwik"
+    "validate": "pnpm typecheck && pnpm test"
   },
   "devDependencies": {
     "@eslint/js": "10",
@@ -55,7 +30,6 @@
     "typescript-eslint": "^8.58.1",
     "undici": "*",
     "vite": "8.0.8",
-    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.4"
   }
 }
