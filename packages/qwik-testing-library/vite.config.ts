@@ -13,7 +13,11 @@ export default defineConfig(() => {
       outDir: "lib",
       minify: false,
       lib: {
-        entry: ["./src/index.ts", "./src/setup.ts"],
+        entry: [
+          "./src/index.ts",
+          "./src/setup.ts",
+          "./src/setup/qwik-v1.ts",
+        ],
         formats: ["es", "cjs"],
         fileName: (format, entryName) =>
           `${entryName}.qwik.${format === "es" ? "mjs" : "cjs"}`,

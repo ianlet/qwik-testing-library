@@ -18,6 +18,11 @@
       "types": "./lib-types/setup.d.ts",
       "import": "./lib/setup.qwik.mjs",
       "require": "./lib/setup.qwik.cjs"
+    },
+    "./setup/qwik-v1": {
+      "types": "./lib-types/setup/qwik-v1.d.ts",
+      "import": "./lib/setup/qwik-v1.qwik.mjs",
+      "require": "./lib/setup/qwik-v1.qwik.cjs"
     }
   },
   "files": [
