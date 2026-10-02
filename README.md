@@ -93,6 +93,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [Qwik v2](#qwik-v2)
     - [Visible tasks finish after `render` resolves](#visible-tasks-finish-after-render-resolves)
     - [`renderHook` waits for the computed signals your hook returns](#renderhook-waits-for-the-computed-signals-your-hook-returns)
+    - [Errors thrown by your components don't fail your tests](#errors-thrown-by-your-components-dont-fail-your-tests)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
     - [Testing Hooks (experimental)](#testing-hooks-experimental)
@@ -154,7 +155,7 @@ npm install --save-dev jsdom
 npm install --save-dev happy-dom
 ```
 
-With Qwik v2, use `jsdom` `30.1.1` or above: `jsdom` 29 can't match the selectors Qwik v2 uses to find its containers.
+With Qwik v2, use `jsdom` `30.1.1` or above.
 
 [npm]: https://www.npmjs.com/
 
@@ -191,10 +192,8 @@ test: {
 },
 ```
 
-The setup module configures Qwik globals (`qTest`, `qRuntimeQrl`, `qDev`, `qInspector`) for testing. It must run
-before any Qwik code loads, which is why it's added to `setupFiles`. Qwik v1 and v2 need different values, so pick the
-module matching your Qwik version. `@noma.to/qwik-testing-library/setup` still works and is the same as
-`setup/qwik-v1`.
+Pick the setup module matching your Qwik version. It must run before any Qwik code loads, so keep it in
+`setupFiles`. `@noma.to/qwik-testing-library/setup` still works and is the same as `setup/qwik-v1`.
 
 By default, Qwik Testing Library cleans everything up automatically for you.
 You can opt out of this by setting the environment variable `QTL_SKIP_AUTO_CLEANUP` to `true`.
@@ -234,8 +233,8 @@ the examples. A few things behave differently than with Qwik v1.
 
 ### Visible tasks finish after `render` resolves
 
-Qwik v2 runs `useVisibleTask$` outside of its render tracking, so `render` can resolve before a visible task's changes
-reach the DOM. Use `findBy*` queries or `waitFor` to assert on them:
+`render` can resolve before your visible tasks have updated the DOM. Use `findBy*` queries or `waitFor` to assert on
+their changes:
 
 ```tsx
 await render(<Clock />);
@@ -249,9 +248,8 @@ This is tracked upstream in [QwikDev/qwik#9121][qwik-9121].
 
 ### `renderHook` waits for the computed signals your hook returns
 
-Qwik v2 loads the code of computed signals lazily, and reading `.value` before it has loaded throws. `renderHook`
-waits for the computed signals your hook returns, either as its result or as a top-level property or array element,
-so you can read them right away:
+`renderHook` waits for the computed signals your hook returns, either as its result or as a top-level property or
+array element, so you can read them right away:
 
 ```tsx
 function useCounter() {
@@ -288,6 +286,12 @@ await result.doubled.promise();
 
 expect(result.doubled.value).toBe(10);
 ```
+
+### Errors thrown by your components don't fail your tests
+
+When a component throws while rendering, or one of its tasks or event handlers throws, Qwik v2 doesn't log the error
+and your test keeps running. Assert on what your component renders: a test expecting content that an error prevented
+from rendering still fails.
 
 ## Examples
 
