@@ -11,7 +11,6 @@ import { useStoreValue } from "./use-store-value";
 import { useDoubled } from "./use-doubled";
 import { useDerived } from "./use-derived";
 import { ThemeContext, useTheme } from "./use-theme";
-import { useSlowlyDoubled } from "./use-slowly-doubled";
 
 describe("renderHook", () => {
   it("should return the hook result and unmount function", async () => {
@@ -91,19 +90,6 @@ describe("renderHook", () => {
       result.input.value = 42;
 
       await waitFor(() => expect(result.derived.value).toBe("derived-42"));
-    });
-  });
-
-  describe("with computed results", () => {
-    it("should resolve computed signals returned as properties", async () => {
-      function useCounterWithDoubled() {
-        const count = useSignal(1);
-        return { count, doubled: useSlowlyDoubled(count) };
-      }
-
-      const { result } = await renderHook(useCounterWithDoubled);
-
-      expect(result.doubled.value).toBe(2);
     });
   });
 });

@@ -100,16 +100,22 @@ async function renderHook<Result>(
   });
 
   const result = resultRef!.current as Result;
-  await Promise.all(Object.values(result as object).map(resolveComputed));
+  await resolveComputedSignals(result);
 
   return { result, unmount };
 }
 
-async function resolveComputed(value: unknown) {
-  const computed = value as { promise?: () => Promise<void> } | null;
-  if (typeof computed?.promise === "function") {
-    await computed.promise();
-  }
+async function resolveComputedSignals(result: unknown) {
+  const computedSignals = isComputed(result)
+    ? [result]
+    : Object.values(result as object).filter(isComputed);
+  await Promise.all(computedSignals.map((computed) => computed.promise()));
+}
+
+type Computed = { promise: () => Promise<void> };
+
+function isComputed(value: unknown): value is Computed {
+  return typeof (value as Partial<Computed> | null)?.promise === "function";
 }
 
 export * from "@testing-library/dom";
