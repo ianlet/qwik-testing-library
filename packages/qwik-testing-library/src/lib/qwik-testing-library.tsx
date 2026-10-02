@@ -1,6 +1,5 @@
 import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
 import type { JSXOutput } from "@builder.io/qwik";
-import { getQwikLoaderScript } from "@builder.io/qwik/server";
 import type {
   ComponentRef,
   RenderOptions,
@@ -8,32 +7,7 @@ import type {
   RenderHookResult,
   Result,
 } from "./types";
-
-// Patch HTMLTemplateElement.childNodes for happy-dom compatibility
-//
-// Qwik's VirtualElementImpl uses a <template> element as temporary storage for detached content.
-// It calls `template.insertBefore(node)` to store nodes and reads them back via `template.childNodes`.
-//
-// In real browsers and jsdom, `insertBefore` on a template adds direct children.
-// However, happy-dom redirects insertions to `template.content`, leaving `childNodes` empty.
-//
-// This patch makes `template.childNodes` return `template.content.childNodes` for happy-dom.
-if (typeof HTMLTemplateElement !== "undefined") {
-  // Detect if this DOM implementation needs the patch by testing behavior
-  const testTemplate = document.createElement("template");
-  const testNode = document.createComment("test");
-  testTemplate.insertBefore(testNode, null);
-  const needsPatch = testTemplate.childNodes.length === 0;
-  testNode.remove();
-
-  if (needsPatch) {
-    Object.defineProperty(HTMLTemplateElement.prototype, "childNodes", {
-      get() {
-        return this.content.childNodes;
-      },
-    });
-  }
-}
+import { qwikV1 } from "./adapters/qwik-v1";
 
 // if we're running in a test runner that supports afterEach
 // then we'll automatically run cleanup afterEach test
@@ -50,8 +24,6 @@ if (typeof process === "undefined" || !process.env?.QTL_SKIP_AUTO_CLEANUP) {
 const mountedContainers = new Set<ComponentRef>();
 
 async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Result> {
-  const qwik = await import("@builder.io/qwik");
-
   let { container, baseElement = container } = options;
   const { wrapper: Wrapper } = options;
   const { queries, serverData } = options;
@@ -72,13 +44,8 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
   // Wrap the component under test if a wrapper is provided
   const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
 
-  // Load the Qwik loader into the target document
-  const doc = baseElement.ownerDocument;
-  const win = doc.defaultView;
-  new Function("document", "window", getQwikLoaderScript())(doc, win);
-
-  const { cleanup } = await qwik.render(container, wrappedUi, { serverData });
-  mountedContainers.add({ container, componentCleanup: cleanup });
+  const { unmount } = await qwikV1.mount(container, wrappedUi, { serverData });
+  mountedContainers.add({ container, componentCleanup: unmount });
 
   return {
     container,
@@ -100,7 +67,7 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
         : console.log(
             prettyDOM(el, maxLength, { ...options, filterNode: () => true }),
           ),
-    unmount: cleanup,
+    unmount,
     ...getQueriesForElement(container, queries),
   };
 }
