@@ -5,10 +5,10 @@
 // import "@noma.to/qwik-testing-library/setup/qwik-v1";
 
 declare global {
-var qTest: boolean;
-var qRuntimeQrl: boolean;
-var qDev: boolean;
-var qInspector: boolean;
+  var qTest: boolean;
+  var qRuntimeQrl: boolean;
+  var qDev: boolean;
+  var qInspector: boolean;
 }
 
 globalThis.qTest = false; // Forces Qwik to run as if in a browser

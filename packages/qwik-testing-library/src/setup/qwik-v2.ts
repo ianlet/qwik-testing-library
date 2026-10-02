@@ -5,9 +5,9 @@
 // import "@noma.to/qwik-testing-library/setup/qwik-v2";
 
 declare global {
-var qRuntimeQrl: boolean;
-var qDev: boolean;
-var qInspector: boolean;
+  var qRuntimeQrl: boolean;
+  var qDev: boolean;
+  var qInspector: boolean;
 }
 
 globalThis.qRuntimeQrl = true; // Allows creating QRLs at runtime, as qwik-mock and renderHook do

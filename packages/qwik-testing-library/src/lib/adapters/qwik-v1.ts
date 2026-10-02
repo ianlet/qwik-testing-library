@@ -26,7 +26,10 @@ function patchTemplateChildNodesForHappyDom() {
 }
 
 function injectQwikLoader(doc: Document) {
-  new Function("document", "window", getQwikLoaderScript())(doc, doc.defaultView);
+  new Function("document", "window", getQwikLoaderScript())(
+    doc,
+    doc.defaultView,
+  );
 }
 
 patchTemplateChildNodesForHappyDom();
@@ -35,7 +38,9 @@ export const mount: Mount = async (container, ui, { serverData }) => {
   const { render } = await import("@builder.io/qwik");
 
   injectQwikLoader(container.ownerDocument);
-  const { cleanup } = await render(container, ui as QwikJSXOutput, { serverData });
+  const { cleanup } = await render(container, ui as QwikJSXOutput, {
+    serverData,
+  });
 
   return { unmount: cleanup };
 };

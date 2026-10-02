@@ -16,7 +16,9 @@
     // Type-checks the specs shared with Qwik v1 against Qwik v2, as qwikVite resolves them
     "paths": {
       "@builder.io/qwik": ["./node_modules/@qwik.dev/core/public.d.ts"],
-      "@qwik.dev/core/jsx-runtime": ["./node_modules/@qwik.dev/core/dist/jsx-runtime.d.ts"]
+      "@qwik.dev/core/jsx-runtime": [
+        "./node_modules/@qwik.dev/core/dist/jsx-runtime.d.ts"
+      ]
     },
     "types": [
       "vite/client",

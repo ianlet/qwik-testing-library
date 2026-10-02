@@ -1,5 +1,8 @@
 import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
-import type { Component as QwikComponent, JSXOutput as QwikJSXOutput } from "@builder.io/qwik";
+import type {
+  Component as QwikComponent,
+  JSXOutput as QwikJSXOutput,
+} from "@builder.io/qwik";
 import type {
   ComponentRef,
   JSXOutput,
@@ -24,7 +27,10 @@ if (typeof process === "undefined" || !process.env?.QTL_SKIP_AUTO_CLEANUP) {
 
 const mountedContainers = new Set<ComponentRef>();
 
-async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Result> {
+async function render(
+  ui: JSXOutput,
+  options: RenderOptions = {},
+): Promise<Result> {
   const { jsx } = await import("@builder.io/qwik");
   const mount = await loadMount();
 
@@ -34,7 +40,10 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
   const baseElement = options.baseElement ?? options.container ?? document.body;
   const container =
     options.container ??
-    baseElement.insertBefore(document.createElement("host"), baseElement.firstChild);
+    baseElement.insertBefore(
+      document.createElement("host"),
+      baseElement.firstChild,
+    );
 
   const wrappedUi = Wrapper
     ? jsx(Wrapper as QwikComponent, { children: ui as QwikJSXOutput })
@@ -113,7 +122,8 @@ type Computed = { promise: () => Promise<void> };
 async function resolveComputedSignals(result: unknown) {
   const { isSignal } = await import("@builder.io/qwik");
   const isComputed = (value: unknown): value is Computed =>
-    isSignal(value) && typeof (value as Partial<Computed>).promise === "function";
+    isSignal(value) &&
+    typeof (value as Partial<Computed>).promise === "function";
 
   const computedSignals = isComputed(result)
     ? [result]
