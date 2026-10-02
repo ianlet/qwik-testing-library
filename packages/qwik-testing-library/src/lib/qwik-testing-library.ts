@@ -105,17 +105,17 @@ async function renderHook<Result>(
   return { result, unmount };
 }
 
+type Computed = { promise: () => Promise<void> };
+
 async function resolveComputedSignals(result: unknown) {
+  const { isSignal } = await import("@builder.io/qwik");
+  const isComputed = (value: unknown): value is Computed =>
+    isSignal(value) && typeof (value as Partial<Computed>).promise === "function";
+
   const computedSignals = isComputed(result)
     ? [result]
     : Object.values(result ?? {}).filter(isComputed);
   await Promise.all(computedSignals.map((computed) => computed.promise()));
-}
-
-type Computed = { promise: () => Promise<void> };
-
-function isComputed(value: unknown): value is Computed {
-  return typeof (value as Partial<Computed> | null)?.promise === "function";
 }
 
 export * from "@testing-library/dom";
