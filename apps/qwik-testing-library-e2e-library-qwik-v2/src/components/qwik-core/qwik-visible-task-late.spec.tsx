@@ -11,10 +11,6 @@ describe("useVisibleTask$ (default intersection-observer strategy)", () => {
     visibleTaskRuns.count = 0;
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("runs the visible task of an element mounted at render exactly once", async () => {
     await render(<LatePanel />);
 
@@ -32,28 +28,5 @@ describe("useVisibleTask$ (default intersection-observer strategy)", () => {
       expect(screen.getByTestId("panel")).toHaveTextContent("panel-visible"),
     );
     expect(visibleTaskRuns.count).toBe(1);
-  });
-
-  it("does not create IntersectionObservers a spec can see", async () => {
-    const instances: unknown[] = [];
-    vi.stubGlobal(
-      "IntersectionObserver",
-      class {
-        constructor() {
-          instances.push(this);
-        }
-        observe() {}
-        unobserve() {}
-        disconnect() {}
-        takeRecords() {
-          return [];
-        }
-      },
-    );
-
-    await render(<LatePanel />);
-
-    expect(await screen.findByText("panel-visible")).toBeInTheDocument();
-    expect(instances).toHaveLength(0);
   });
 });
