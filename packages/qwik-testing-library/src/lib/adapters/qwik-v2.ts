@@ -1,3 +1,5 @@
+import type { JSXOutput as QwikJSXOutput } from "@qwik.dev/core";
+import type { CorePlatform } from "@qwik.dev/core/internal";
 import type { QwikAdapter } from "./qwik-adapter";
 
 const nextMacrotask = () => new Promise((resolve) => setTimeout(resolve));
@@ -23,8 +25,8 @@ export const qwikAdapter: QwikAdapter = {
     const { getTestPlatform, trigger } = await import("@qwik.dev/core/testing");
     const { getQwikLoaderScript } = await import("@qwik.dev/core/server");
 
-    setPlatform(getTestPlatform() as never);
-    const { cleanup } = await render(container, ui as never, { serverData });
+    setPlatform(getTestPlatform() as CorePlatform);
+    const { cleanup } = await render(container, ui as QwikJSXOutput, { serverData });
     const qContainer = getDomContainer(container);
     const settle = () => waitUntilSettled(container, () => _waitUntilRendered(qContainer));
     await settle();
