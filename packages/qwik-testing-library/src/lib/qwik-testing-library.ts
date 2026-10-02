@@ -26,22 +26,13 @@ const mountedContainers = new Set<ComponentRef>();
 async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Result> {
   const { jsx } = await import("@builder.io/qwik");
 
-  let { container, baseElement = container } = options;
-  const { wrapper: Wrapper } = options;
-  const { queries, serverData } = options;
-
-  if (!baseElement) {
-    // Default to document.body instead of documentElement to avoid output of potentially large
-    // head elements (such as JSS style blocks) in debug output.
-    baseElement = document.body;
-  }
-
-  if (!container) {
-    container = baseElement.insertBefore(
-      document.createElement("host"),
-      baseElement.firstChild,
-    );
-  }
+  const { wrapper: Wrapper, queries, serverData } = options;
+  // Default to document.body instead of documentElement to avoid output of potentially large
+  // head elements (such as JSS style blocks) in debug output.
+  const baseElement = options.baseElement ?? options.container ?? document.body;
+  const container =
+    options.container ??
+    baseElement.insertBefore(document.createElement("host"), baseElement.firstChild);
 
   const wrappedUi = Wrapper ? jsx(Wrapper, { children: ui }) : ui;
 
