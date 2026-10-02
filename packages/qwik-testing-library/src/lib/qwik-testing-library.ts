@@ -108,7 +108,7 @@ async function renderHook<Result>(
 async function resolveComputedSignals(result: unknown) {
   const computedSignals = isComputed(result)
     ? [result]
-    : Object.values(result as object).filter(isComputed);
+    : Object.values(result ?? {}).filter(isComputed);
   await Promise.all(computedSignals.map((computed) => computed.promise()));
 }
 
