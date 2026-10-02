@@ -37,7 +37,7 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
   const wrappedUi = Wrapper ? jsx(Wrapper, { children: ui }) : ui;
 
   const { unmount } = await qwikV1.mount(container, wrappedUi, { serverData });
-  mountedContainers.add({ container, componentCleanup: unmount });
+  mountedContainers.add({ container, unmount });
 
   return {
     container,
@@ -65,9 +65,9 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
 }
 
 function cleanupAtContainer(ref: ComponentRef) {
-  const { container, componentCleanup } = ref;
+  const { container, unmount } = ref;
 
-  componentCleanup();
+  unmount();
 
   if (container?.parentNode === document.body) {
     document.body.removeChild(container);

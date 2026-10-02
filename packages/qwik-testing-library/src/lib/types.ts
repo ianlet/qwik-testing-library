@@ -29,7 +29,7 @@ export type Result = BoundFunctions<typeof queries> & {
 
 export type ComponentRef = {
   container: HTMLElement;
-  componentCleanup: () => void;
+  unmount: () => void;
 };
 
 export type RenderHookOptions = Pick<RenderOptions, 'wrapper'>;
