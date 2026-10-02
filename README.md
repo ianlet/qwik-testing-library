@@ -93,7 +93,6 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [Qwik v2](#qwik-v2)
     - [Visible tasks finish after `render` resolves](#visible-tasks-finish-after-render-resolves)
     - [`renderHook` waits for the computed signals your hook returns](#renderhook-waits-for-the-computed-signals-your-hook-returns)
-    - [Mocks are imported from `@noma.to/qwik-mock/qwik-v2`](#mocks-are-imported-from-nomatoqwik-mockqwik-v2)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
     - [Testing Hooks (experimental)](#testing-hooks-experimental)
@@ -290,14 +289,6 @@ await result.doubled.promise();
 expect(result.doubled.value).toBe(10);
 ```
 
-### Mocks are imported from `@noma.to/qwik-mock/qwik-v2`
-
-The `@noma.to/qwik-mock/qwik-v2` entry has the same API, typed against Qwik v2's `QRL`:
-
-```tsx
-import { clearAllMocks, mock$ } from "@noma.to/qwik-mock/qwik-v2";
-```
-
 ## Examples
 
 Below are some examples of how to use `@noma.to/qwik-testing-library` to tests your Qwik components.
@@ -470,8 +461,6 @@ npm install --save-dev @noma.to/qwik-mock
 
 It is _not_ a replacement of regular mocking functions (such as `vi.fn` and `vi.mock`) as its intended use is only for
 testing callbacks of Qwik components.
-
-With Qwik v2, import it from `@noma.to/qwik-mock/qwik-v2` (see [Qwik v2](#qwik-v2)).
 
 #### Usage
 

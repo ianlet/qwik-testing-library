@@ -109,7 +109,7 @@ jobs:
         run: pnpm build
 
       - name: 🔍 Check type declarations
-        run: pnpm --filter "{packages/qwik-testing-library}" check.types
+        run: pnpm --filter "{packages/**}" check.types
 
   preview:
     name: Preview Release
