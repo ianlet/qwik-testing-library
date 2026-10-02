@@ -1,4 +1,5 @@
 import { getQwikLoaderScript } from "@builder.io/qwik/server";
+import type { JSXOutput as QwikJSXOutput } from "@builder.io/qwik";
 import type { QwikAdapter } from "./qwik-adapter";
 
 // Qwik's VirtualElementImpl uses a <template> element as temporary storage for detached content.
@@ -35,7 +36,7 @@ export const qwikAdapter: QwikAdapter = {
     const { render } = await import("@builder.io/qwik");
 
     injectQwikLoader(container.ownerDocument);
-    const { cleanup } = await render(container, ui, { serverData });
+    const { cleanup } = await render(container, ui as QwikJSXOutput, { serverData });
 
     return { unmount: cleanup };
   },

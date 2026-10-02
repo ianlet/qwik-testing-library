@@ -43,10 +43,11 @@
     "build": "pnpm build.lib && pnpm build.types",
     "build.lib": "vite build --mode lib",
     "build.types": "tsc --emitDeclarationOnly",
+    "check.types": "! grep -rlE \"@builder.io/qwik|@qwik.dev/core\" lib-types",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "validate": "pnpm build"
+    "validate": "pnpm build && pnpm check.types"
   },
   "devDependencies": {
     "@builder.io/qwik": "1.19.2",

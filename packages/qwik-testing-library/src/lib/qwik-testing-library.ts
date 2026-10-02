@@ -1,7 +1,8 @@
 import { getQueriesForElement, prettyDOM } from "@testing-library/dom";
-import type { JSXOutput } from "@builder.io/qwik";
+import type { Component as QwikComponent, JSXOutput as QwikJSXOutput } from "@builder.io/qwik";
 import type {
   ComponentRef,
+  JSXOutput,
   RenderOptions,
   RenderHookOptions,
   RenderHookResult,
@@ -35,7 +36,9 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
     options.container ??
     baseElement.insertBefore(document.createElement("host"), baseElement.firstChild);
 
-  const wrappedUi = Wrapper ? jsx(Wrapper, { children: ui }) : ui;
+  const wrappedUi = Wrapper
+    ? jsx(Wrapper as QwikComponent, { children: ui as QwikJSXOutput })
+    : ui;
 
   const { unmount } = await qwik.mount(container, wrappedUi, { serverData });
   mountedContainers.add({ container, unmount });

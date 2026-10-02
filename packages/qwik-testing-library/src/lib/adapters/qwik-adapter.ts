@@ -1,5 +1,4 @@
-import type { JSXOutput } from "@builder.io/qwik";
-import type { RenderOptions } from "../types";
+import type { JSXOutput, RenderOptions } from "../types";
 
 export interface MountedComponent {
   unmount: () => void;
