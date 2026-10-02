@@ -1,0 +1,60 @@
+{
+  "name": "qwik-testing-library-e2e-library-qwik-v2",
+  "version": "0.0.0-semantically-released",
+  "description": "E2E tests for @noma.to/qwik-testing-library (Qwik v2 library consumer)",
+  "main": "./lib/index.qwik.mjs",
+  "qwik": "./lib/index.qwik.mjs",
+  "types": "./lib-types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib-types/index.d.ts",
+      "import": "./lib/index.qwik.mjs",
+      "require": "./lib/index.qwik.cjs"
+    }
+  },
+  "files": [
+    "lib",
+    "lib-types"
+  ],
+  "engines": {
+    "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
+  },
+  "private": false,
+  "type": "module",
+  "scripts": {
+    "build": "qwik build",
+    "build.lib": "vite build --mode lib",
+    "build.types": "tsc --emitDeclarationOnly",
+    "dev": "vite --mode ssr",
+    "dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",
+    "fmt": "prettier --write .",
+    "fmt.check": "prettier --check .",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "start": "vite --open --mode ssr",
+    "test": "vitest run",
+    "validate": "pnpm test",
+    "qwik": "qwik"
+  },
+  "devDependencies": {
+    "@eslint/js": "10",
+    "@noma.to/qwik-mock": "workspace:*",
+    "@noma.to/qwik-testing-library": "workspace:*",
+    "@qwik.dev/core": "2.0.0-rc.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "25.6.0",
+    "@vitest/ui": "^4.1.4",
+    "eslint": "10",
+    "eslint-plugin-qwik": "2.0.0-rc.0",
+    "globals": "^17.4.0",
+    "happy-dom": "^20.8.9",
+    "jsdom": "^30.1.1",
+    "prettier": "3.8.2",
+    "typescript": "6.0.2",
+    "typescript-eslint": "^8.58.1",
+    "undici": "*",
+    "vite": "8.0.8",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.4"
+  }
+}

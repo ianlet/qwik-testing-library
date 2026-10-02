@@ -12,3 +12,11 @@ export interface QwikAdapter {
     options: Pick<RenderOptions, "serverData">,
   ): Promise<MountedComponent>;
 }
+
+export async function loadQwikAdapter(): Promise<QwikAdapter> {
+  const { version } = await import("@builder.io/qwik");
+  const { qwikAdapter } = version.startsWith("1.")
+    ? await import("./qwik-v1")
+    : await import("./qwik-v2");
+  return qwikAdapter;
+}

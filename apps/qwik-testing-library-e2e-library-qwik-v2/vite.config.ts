@@ -1,24 +1,21 @@
 import { defineConfig } from "vite";
 import pkg from "./package.json";
+import { qwikVite } from "@qwik.dev/core/optimizer";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const { dependencies = {}, peerDependencies = {} } = pkg as any;
 const makeRegex = (dep) => new RegExp(`^${dep}(/.*)?$`);
 const excludeAll = (obj) => Object.keys(obj).map(makeRegex);
 
+// Support both jsdom and happy-dom via TEST_DOM env variable
+const testEnvironment = process.env.TEST_DOM || "happy-dom";
+
 export default defineConfig(() => {
   return {
     build: {
       target: "es2020",
-      outDir: "lib",
-      minify: false,
       lib: {
-        entry: [
-          "./src/index.ts",
-          "./src/setup.ts",
-          "./src/setup/qwik-v1.ts",
-          "./src/setup/qwik-v2.ts",
-        ],
+        entry: "./src/index.ts",
         formats: ["es", "cjs"],
         fileName: (format, entryName) =>
           `${entryName}.qwik.${format === "es" ? "mjs" : "cjs"}`,
@@ -36,6 +33,14 @@ export default defineConfig(() => {
         ],
       },
     },
-    plugins: [tsconfigPaths()],
+    plugins: [qwikVite(), tsconfigPaths()],
+    test: {
+      environment: testEnvironment,
+      setupFiles: [
+        "@noma.to/qwik-testing-library/setup/qwik-v2",
+        "./vitest.setup.ts",
+      ],
+      globals: true,
+    },
   };
 });

@@ -7,7 +7,7 @@ import type {
   RenderHookResult,
   Result,
 } from "./types";
-import { qwikV1 } from "./adapters/qwik-v1";
+import { loadQwikAdapter } from "./adapters/qwik-adapter";
 
 // if we're running in a test runner that supports afterEach
 // then we'll automatically run cleanup afterEach test
@@ -25,6 +25,7 @@ const mountedContainers = new Set<ComponentRef>();
 
 async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Result> {
   const { jsx } = await import("@builder.io/qwik");
+  const qwik = await loadQwikAdapter();
 
   const { wrapper: Wrapper, queries, serverData } = options;
   // Default to document.body instead of documentElement to avoid output of potentially large
@@ -36,7 +37,7 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
 
   const wrappedUi = Wrapper ? jsx(Wrapper, { children: ui }) : ui;
 
-  const { unmount } = await qwikV1.mount(container, wrappedUi, { serverData });
+  const { unmount } = await qwik.mount(container, wrappedUi, { serverData });
   mountedContainers.add({ container, unmount });
 
   return {
@@ -98,7 +99,17 @@ async function renderHook<Result>(
     wrapper: options.wrapper,
   });
 
-  return { result: resultRef!.current as Result, unmount };
+  const result = resultRef!.current as Result;
+  await Promise.all(Object.values(result as object).map(resolveComputed));
+
+  return { result, unmount };
+}
+
+async function resolveComputed(value: unknown) {
+  const computed = value as { promise?: () => Promise<void> } | null;
+  if (typeof computed?.promise === "function") {
+    await computed.promise();
+  }
 }
 
 export * from "@testing-library/dom";

@@ -30,7 +30,7 @@ function injectQwikLoader(doc: Document) {
 
 patchTemplateChildNodesForHappyDom();
 
-export const qwikV1: QwikAdapter = {
+export const qwikAdapter: QwikAdapter = {
   async mount(container, ui, { serverData }) {
     const { render } = await import("@builder.io/qwik");
 
