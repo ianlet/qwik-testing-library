@@ -1,5 +1,5 @@
 import type { JSXOutput as QwikJSXOutput } from "@qwik.dev/core";
-import type { QwikAdapter } from "./qwik-adapter";
+import type { Mount } from "./qwik-adapter";
 
 // A test DOM has no layout, so a real IntersectionObserver never reports anything as visible.
 // The qwikloader gets this one instead, so it starts each `useVisibleTask$` as soon as the
@@ -33,16 +33,14 @@ function injectQwikLoader(doc: Document, loaderScript: string) {
   );
 }
 
-export const qwikAdapter: QwikAdapter = {
-  async mount(container, ui, { serverData }) {
-    const { render, getPlatform, setPlatform } = await import("@qwik.dev/core/internal");
-    const { getQwikLoaderScript } = await import("@qwik.dev/core/server");
+export const mount: Mount = async (container, ui, { serverData }) => {
+  const { render, getPlatform, setPlatform } = await import("@qwik.dev/core/internal");
+  const { getQwikLoaderScript } = await import("@qwik.dev/core/server");
 
-    // Qwik detects the browser by checking that HTMLElement is native, which a test DOM isn't.
-    setPlatform({ ...getPlatform(), isServer: false });
-    injectQwikLoader(container.ownerDocument, getQwikLoaderScript());
-    const { cleanup } = await render(container, ui as QwikJSXOutput, { serverData });
+  // Qwik detects the browser by checking that HTMLElement is native, which a test DOM isn't.
+  setPlatform({ ...getPlatform(), isServer: false });
+  injectQwikLoader(container.ownerDocument, getQwikLoaderScript());
+  const { cleanup } = await render(container, ui as QwikJSXOutput, { serverData });
 
-    return { unmount: cleanup };
-  },
+  return { unmount: cleanup };
 };

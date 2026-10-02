@@ -1,21 +1,15 @@
-import type { JSXOutput, RenderOptions } from "../types";
+import type { ComponentRef, JSXOutput, RenderOptions } from "../types";
 
-export interface MountedComponent {
-  unmount: () => void;
-}
+export type Mount = (
+  container: HTMLElement,
+  ui: JSXOutput,
+  options: Pick<RenderOptions, "serverData">,
+) => Promise<Pick<ComponentRef, "unmount">>;
 
-export interface QwikAdapter {
-  mount(
-    container: HTMLElement,
-    ui: JSXOutput,
-    options: Pick<RenderOptions, "serverData">,
-  ): Promise<MountedComponent>;
-}
-
-export async function loadQwikAdapter(): Promise<QwikAdapter> {
+export async function loadMount(): Promise<Mount> {
   const { version } = await import("@builder.io/qwik");
-  const { qwikAdapter } = version.startsWith("1.")
+  const { mount } = version.startsWith("1.")
     ? await import("./qwik-v1")
     : await import("./qwik-v2");
-  return qwikAdapter;
+  return mount;
 }

@@ -8,7 +8,7 @@ import type {
   RenderHookResult,
   Result,
 } from "./types";
-import { loadQwikAdapter } from "./adapters/qwik-adapter";
+import { loadMount } from "./adapters/qwik-adapter";
 
 // if we're running in a test runner that supports afterEach
 // then we'll automatically run cleanup afterEach test
@@ -26,7 +26,7 @@ const mountedContainers = new Set<ComponentRef>();
 
 async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Result> {
   const { jsx } = await import("@builder.io/qwik");
-  const qwik = await loadQwikAdapter();
+  const mount = await loadMount();
 
   const { wrapper: Wrapper, queries, serverData } = options;
   // Default to document.body instead of documentElement to avoid output of potentially large
@@ -40,7 +40,7 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
     ? jsx(Wrapper as QwikComponent, { children: ui as QwikJSXOutput })
     : ui;
 
-  const { unmount } = await qwik.mount(container, wrappedUi, { serverData });
+  const { unmount } = await mount(container, wrappedUi, { serverData });
   mountedContainers.add({ container, unmount });
 
   return {
