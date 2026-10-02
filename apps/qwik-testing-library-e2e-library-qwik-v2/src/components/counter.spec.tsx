@@ -16,6 +16,22 @@ describe("<Counter />", () => {
     expect(screen.getByText("Counter: 0")).toBeInTheDocument();
   });
 
+  describe("with fake timers", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("should render", async () => {
+      await render(<Counter onChange$={onChangeMock} />);
+
+      expect(screen.getByText("Counter: 0")).toBeInTheDocument();
+    });
+  });
+
   describe("on increment", () => {
     it("should increase by 1", async () => {
       const user = userEvent.setup();

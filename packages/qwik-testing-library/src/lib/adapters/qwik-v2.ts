@@ -1,5 +1,4 @@
 import type { JSXOutput as QwikJSXOutput } from "@qwik.dev/core";
-import type { CorePlatform } from "@qwik.dev/core/internal";
 import type { QwikAdapter } from "./qwik-adapter";
 
 // A test DOM has no layout, so a real IntersectionObserver never reports anything as visible.
@@ -34,37 +33,15 @@ function injectQwikLoader(doc: Document, loaderScript: string) {
   );
 }
 
-const nextMacrotask = () => new Promise((resolve) => setTimeout(resolve));
-
-async function waitUntilSettled(container: HTMLElement, waitUntilRendered: () => Promise<void>) {
-  let mutated: boolean;
-  const observer = new MutationObserver(() => (mutated = true));
-  observer.observe(container, { subtree: true, childList: true, attributes: true, characterData: true });
-  try {
-    do {
-      mutated = false;
-      await waitUntilRendered();
-      await nextMacrotask();
-    } while (mutated);
-  } finally {
-    observer.disconnect();
-  }
-}
-
 export const qwikAdapter: QwikAdapter = {
   async mount(container, ui, { serverData }) {
-    const { render, getDomContainer, setPlatform, _waitUntilRendered } = await import("@qwik.dev/core/internal");
-    const { getTestPlatform } = await import("@qwik.dev/core/testing");
+    const { render, getPlatform, setPlatform } = await import("@qwik.dev/core/internal");
     const { getQwikLoaderScript } = await import("@qwik.dev/core/server");
 
-    setPlatform(getTestPlatform() as CorePlatform);
-    const { cleanup } = await render(container, ui as QwikJSXOutput, { serverData });
-    const qContainer = getDomContainer(container);
-    const settle = () => waitUntilSettled(container, () => _waitUntilRendered(qContainer));
-    await settle();
-
+    // Qwik detects the browser by checking that HTMLElement is native, which a test DOM isn't.
+    setPlatform({ ...getPlatform(), isServer: false });
     injectQwikLoader(container.ownerDocument, getQwikLoaderScript());
-    await settle();
+    const { cleanup } = await render(container, ui as QwikJSXOutput, { serverData });
 
     return { unmount: cleanup };
   },
