@@ -24,6 +24,8 @@ if (typeof process === "undefined" || !process.env?.QTL_SKIP_AUTO_CLEANUP) {
 const mountedContainers = new Set<ComponentRef>();
 
 async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Result> {
+  const { jsx } = await import("@builder.io/qwik");
+
   let { container, baseElement = container } = options;
   const { wrapper: Wrapper } = options;
   const { queries, serverData } = options;
@@ -41,8 +43,7 @@ async function render(ui: JSXOutput, options: RenderOptions = {}): Promise<Resul
     );
   }
 
-  // Wrap the component under test if a wrapper is provided
-  const wrappedUi = !Wrapper ? ui : <Wrapper children={ui} />;
+  const wrappedUi = Wrapper ? jsx(Wrapper, { children: ui }) : ui;
 
   const { unmount } = await qwikV1.mount(container, wrappedUi, { serverData });
   mountedContainers.add({ container, componentCleanup: unmount });
@@ -92,17 +93,17 @@ async function renderHook<Result>(
   callback: () => Result,
   options: RenderHookOptions = {},
 ): Promise<RenderHookResult<Result>> {
-  const { component$, noSerialize } = await import("@builder.io/qwik");
+  const { component$, jsx, noSerialize } = await import("@builder.io/qwik");
 
   const callbackRef = noSerialize(callback);
   const resultRef = noSerialize({ current: undefined as Result | undefined });
 
   const TestComponent = component$(() => {
     resultRef!.current = callbackRef!();
-    return <></>;
+    return null;
   });
 
-  const { unmount } = await render(<TestComponent />, {
+  const { unmount } = await render(jsx(TestComponent, {}), {
     wrapper: options.wrapper,
   });
 
