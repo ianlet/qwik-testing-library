@@ -23,7 +23,7 @@
     "eslint": "10",
     "eslint-plugin-qwik": "2.0.0-rc.0",
     "globals": "^17.4.0",
-    "happy-dom": "^20.8.9",
+    "happy-dom": "^20.14.5",
     "jsdom": "^30.1.1",
     "prettier": "3.8.2",
     "typescript": "6.0.2",
