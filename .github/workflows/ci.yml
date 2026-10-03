@@ -20,18 +20,23 @@ jobs:
   main:
     # ignore all-contributors PRs
     if: ${{ !contains(github.head_ref, 'all-contributors') }}
-    name: Node ${{ matrix.node }}, Qwik ${{ matrix.qwik }}, ${{ matrix.dom }}, ${{ matrix.check }}
+    name: Node ${{ matrix.node }}, Qwik ${{ matrix.qwik.version }}, ${{ matrix.dom }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         node: ["20", "22"]
-        qwik: ["1.12", "1.14.1", "1.15", "1.16", "1.17", "1.18", "1.19"]
+        qwik:
+          - { major: "1", version: "1.12" }
+          - { major: "1", version: "1.14.1" }
+          - { major: "1", version: "1.15" }
+          - { major: "1", version: "1.16" }
+          - { major: "1", version: "1.17" }
+          - { major: "1", version: "1.18" }
+          - { major: "1", version: "1.19" }
+          - { major: "2", version: "2.0.0-rc.0" }
         dom: ["jsdom", "happy-dom"]
-        check: ["test"]
-        include:
-          - { node: "22", qwik: "1.19", check: "lint" }
 
     steps:
       - name: ⬇️ Checkout repo
@@ -52,15 +57,25 @@ jobs:
           cache: "pnpm"
 
       - name: 📥 Download deps
-        run: |
-          pnpm install
-          pnpm --filter "{packages/qwik-testing-library}" install @builder.io/qwik@${{ matrix.qwik }}
-          pnpm --filter "{packages/qwik-mock}" install @builder.io/qwik@${{ matrix.qwik }}
-          pnpm --filter "{apps/qwik-testing-library-e2e-library}" install @builder.io/qwik@${{ matrix.qwik }}
-          pnpm --filter "{apps/qwik-testing-library-e2e-app}" install @builder.io/qwik@${{ matrix.qwik }} @builder.io/qwik-city@${{ matrix.qwik }}
+        run: pnpm install
 
-      - name: ▶️ Run ${{ matrix.check }}
-        run: pnpm ${{ matrix.check }}
+      - name: 📌 Pin Qwik v1
+        if: ${{ matrix.qwik.major == '1' }}
+        run: |
+          pnpm --filter "{packages/qwik-testing-library}" install @builder.io/qwik@${{ matrix.qwik.version }}
+          pnpm --filter "{packages/qwik-mock}" install @builder.io/qwik@${{ matrix.qwik.version }}
+          pnpm --filter "{apps/qwik-testing-library-e2e-library}" install @builder.io/qwik@${{ matrix.qwik.version }}
+          pnpm --filter "{apps/qwik-testing-library-e2e-app}" install @builder.io/qwik@${{ matrix.qwik.version }} @builder.io/qwik-city@${{ matrix.qwik.version }}
+
+      - name: 📌 Pin Qwik v2
+        if: ${{ matrix.qwik.major == '2' }}
+        run: |
+          pnpm --filter "{packages/qwik-testing-library}" install @qwik.dev/core@${{ matrix.qwik.version }}
+          pnpm --filter "{packages/qwik-mock}" install @qwik.dev/core@${{ matrix.qwik.version }}
+          pnpm --filter "{apps/qwik-testing-library-e2e-library-qwik-v2}" install @qwik.dev/core@${{ matrix.qwik.version }}
+
+      - name: ▶️ Run tests
+        run: pnpm test:qwik-v${{ matrix.qwik.major }}
         env:
           TEST_DOM: ${{ matrix.dom }}
 
@@ -87,8 +102,14 @@ jobs:
       - name: 📥 Download deps
         run: pnpm install
 
+      - name: 🔍 Lint
+        run: pnpm lint
+
       - name: 🏗️ Build packages
         run: pnpm build
+
+      - name: 🔍 Check type declarations
+        run: pnpm --filter "{packages/**}" check.types
 
   preview:
     name: Preview Release

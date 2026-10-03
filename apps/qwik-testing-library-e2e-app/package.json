@@ -21,7 +21,8 @@
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr",
     "test": "vitest run",
-    "validate": "pnpm test",
+    "typecheck": "tsc --noEmit",
+    "validate": "pnpm typecheck && pnpm test",
     "qwik": "qwik"
   },
   "devDependencies": {

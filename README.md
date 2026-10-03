@@ -90,6 +90,10 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
 - [This Solution](#this-solution)
 - [Installation](#installation)
 - [Setup](#setup)
+- [Qwik v2](#qwik-v2)
+    - [Visible tasks finish after `render` resolves](#visible-tasks-finish-after-render-resolves)
+    - [`renderHook` waits for the computed signals your hook returns](#renderhook-waits-for-the-computed-signals-your-hook-returns)
+    - [Errors thrown by your components don't fail your tests](#errors-thrown-by-your-components-dont-fail-your-tests)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
     - [Testing Hooks (experimental)](#testing-hooks-experimental)
@@ -132,7 +136,8 @@ should be installed as one of your project's `devDependencies`:
 npm install --save-dev @noma.to/qwik-testing-library @testing-library/dom
 ```
 
-This library supports `qwik` versions `1.12.0` and above and `@testing-library/dom` versions `10.1.0` and above.
+This library supports Qwik v1 (`@builder.io/qwik` `1.12.0` and above), Qwik v2 (`@qwik.dev/core` `2.0.0-rc.0` and
+above) and `@testing-library/dom` versions `10.1.0` and above.
 
 You may also be interested in installing `@testing-library/jest-dom` and `@testing-library/user-event` so you can
 use [the custom jest matchers][jest-dom] and [the user event library][user-event] to test interactions with the DOM.
@@ -149,6 +154,8 @@ npm install --save-dev jsdom
 # or
 npm install --save-dev happy-dom
 ```
+
+With Qwik v2, use `jsdom` `30.1.1` or above.
 
 [npm]: https://www.npmjs.com/
 
@@ -178,15 +185,15 @@ Add the `test` section to your `vite.config.ts`:
 test: {
   environment: "jsdom", // or "happy-dom"
   setupFiles: [
-    "@noma.to/qwik-testing-library/setup",
+    "@noma.to/qwik-testing-library/setup/qwik-v1", // or ".../setup/qwik-v2" with Qwik v2
     "@testing-library/jest-dom/vitest", // optional, for DOM matchers
   ],
   globals: true,
 },
 ```
 
-The `@noma.to/qwik-testing-library/setup` module configures Qwik globals (`qTest`, `qRuntimeQrl`, `qDev`,
-`qInspector`) for testing. It must run before any Qwik code loads, which is why it's added to `setupFiles`.
+Pick the setup module matching your Qwik version. It must run before any Qwik code loads, so keep it in
+`setupFiles`. `@noma.to/qwik-testing-library/setup` still works and is the same as `setup/qwik-v1`.
 
 By default, Qwik Testing Library cleans everything up automatically for you.
 You can opt out of this by setting the environment variable `QTL_SKIP_AUTO_CLEANUP` to `true`.
@@ -218,6 +225,73 @@ Finally, edit your `tsconfig.json` to declare the following global types:
 ```
 
 [vitest]: https://vitest.dev/
+
+## Qwik v2
+
+Everything in this README works with Qwik v2: import Qwik APIs from `@qwik.dev/core` instead of `@builder.io/qwik` in
+the examples. A few things behave differently than with Qwik v1.
+
+### Visible tasks finish after `render` resolves
+
+`render` can resolve before your visible tasks have updated the DOM. Use `findBy*` queries or `waitFor` to assert on
+their changes:
+
+```tsx
+await render(<Clock />);
+
+expect(await screen.findByText("12:00")).toBeInTheDocument();
+```
+
+This is tracked upstream in [QwikDev/qwik#9121][qwik-9121].
+
+[qwik-9121]: https://github.com/QwikDev/qwik/issues/9121
+
+### `renderHook` waits for the computed signals your hook returns
+
+`renderHook` waits for the computed signals your hook returns, either as its result or as a top-level property or
+array element, so you can read them right away:
+
+```tsx
+function useCounter() {
+  const count = useSignal(1);
+  const doubled = useComputed$(() => count.value * 2);
+  return { count, doubled };
+}
+
+const { result } = await renderHook(useCounter);
+
+expect(result.doubled.value).toBe(2);
+```
+
+Computed signals update as soon as their dependencies change:
+
+```tsx
+result.count.value = 5;
+
+expect(result.doubled.value).toBe(10);
+```
+
+For an async computed, or a computed nested deeper in the result, wait for it with `promise()` like you would in Qwik:
+
+```tsx
+function useCounter() {
+  const count = useSignal(1);
+  const doubled = useComputed$(async () => count.value * 2);
+  return { count, doubled };
+}
+
+const { result } = await renderHook(useCounter);
+result.count.value = 5;
+await result.doubled.promise();
+
+expect(result.doubled.value).toBe(10);
+```
+
+### Errors thrown by your components don't fail your tests
+
+When a component throws while rendering, or one of its tasks or event handlers throws, Qwik v2 doesn't log the error
+and your test keeps running. Assert on what your component renders: a test expecting content that an error prevented
+from rendering still fails.
 
 ## Examples
 
@@ -315,9 +389,15 @@ references, you can read and mutate them directly — no `.current` wrapper need
 
 #### ESLint `qwik/use-method-usage`
 
-The Qwik ESLint plugin only allows `use*` calls inside `component$` or `use*`-named functions.
-This is a known limitation — a discussion is in progress with the Qwik team to relax their ESLint rule.
-In the meantime, when you need to pass arguments to your hook, wrap it in a `use*`-named function to stay lint-clean:
+With Qwik v2, the Qwik ESLint plugin allows `use*` calls inside `renderHook` callbacks, so you can pass arguments
+inline:
+
+```tsx
+const { result } = await renderHook(() => useCounter(10));
+```
+
+With Qwik v1, the plugin only allows `use*` calls inside `component$` or `use*`-named functions. When you need to pass
+arguments to your hook, wrap it in a `use*`-named function to stay lint-clean:
 
 ```tsx
 // passing the hook by reference — lint-clean

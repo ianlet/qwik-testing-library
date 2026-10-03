@@ -6,6 +6,8 @@
   "scripts": {
     "toc": "doctoc README.md",
     "test": "pnpm build && pnpm -r test",
+    "test:qwik-v1": "pnpm build && pnpm --filter ./apps/qwik-testing-library-e2e-library --filter ./apps/qwik-testing-library-e2e-app validate",
+    "test:qwik-v2": "pnpm build && pnpm --filter ./apps/qwik-testing-library-e2e-library-qwik-v2 validate",
     "fmt": "pnpm -r fmt",
     "lint": "pnpm -r lint",
     "validate": "pnpm -r lint && pnpm -r validate",

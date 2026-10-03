@@ -37,7 +37,7 @@ export default defineConfig(() => {
     test: {
       environment: testEnvironment,
       setupFiles: [
-        "@noma.to/qwik-testing-library/setup",
+        "@noma.to/qwik-testing-library/setup/qwik-v1",
         "./vitest.setup.ts",
       ],
       globals: true,

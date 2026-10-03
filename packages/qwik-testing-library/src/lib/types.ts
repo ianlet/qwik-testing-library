@@ -4,9 +4,14 @@ import type {
   Queries,
 } from "@testing-library/dom";
 import { queries } from "@testing-library/dom";
-import type { Component, RenderOptions as QwikRenderOptions } from "@builder.io/qwik";
+// Structural equivalents of the Qwik types this library accepts, so its declarations
+// stay valid whichever Qwik version is installed.
+type JSXNode = { type: unknown; props: unknown; key: unknown };
+export type JSXOutput = JSXNode | string | number | boolean | null | undefined | JSXOutput[];
+export type Component = (props: any, ...rest: any[]) => JSXOutput;
 
-export interface RenderOptions extends QwikRenderOptions {
+export interface RenderOptions {
+  serverData?: Record<string, any>;
   container?: HTMLElement;
   baseElement?: HTMLElement;
   queries?: Queries & typeof queries;
@@ -29,7 +34,7 @@ export type Result = BoundFunctions<typeof queries> & {
 
 export type ComponentRef = {
   container: HTMLElement;
-  componentCleanup: () => void;
+  unmount: () => void;
 };
 
 export type RenderHookOptions = Pick<RenderOptions, 'wrapper'>;

@@ -24,6 +24,16 @@ describe("renderHook", () => {
     expect(unmount).toBeTypeOf("function");
   });
 
+  it("should support hooks that return nothing", async () => {
+    function useSideEffectOnly() {
+      useSignal(0);
+    }
+
+    const { result } = await renderHook(useSideEffectOnly);
+
+    expect(result).toBeUndefined();
+  });
+
   it("should return a reactive result", async () => {
     const { result } = await renderHook(useCounter);
 

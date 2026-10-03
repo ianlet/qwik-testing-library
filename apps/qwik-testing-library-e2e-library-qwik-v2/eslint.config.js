@@ -25,15 +25,6 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "error",
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector:
-            ":matches(ImportDeclaration, ImportExpression)[source.value=/^@(builder\\.io\\/qwik|qwik\\.dev\\/core)\\/testing$/]",
-          message:
-            "Qwik's testing entry point requires prettier, an optional peer dependency consumers may not have.",
-        },
-      ],
     },
   },
 );

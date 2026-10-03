@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "ES2017",
+    "module": "ES2022",
+    "lib": ["es2020", "DOM"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "@qwik.dev/core",
+    "strict": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    // Type-checks the specs shared with Qwik v1 against Qwik v2, as qwikVite resolves them
+    "paths": {
+      "@builder.io/qwik": ["./node_modules/@qwik.dev/core/public.d.ts"],
+      "@qwik.dev/core/jsx-runtime": [
+        "./node_modules/@qwik.dev/core/dist/jsx-runtime.d.ts"
+      ]
+    },
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "@testing-library/jest-dom/vitest"
+    ]
+  },
+  "include": [
+    "src",
+    "../qwik-testing-library-e2e-library/src/components",
+    "../qwik-testing-library-e2e-library/src/hooks",
+    "../qwik-testing-library-e2e-library/src/type-probes.tsx"
+  ]
+}

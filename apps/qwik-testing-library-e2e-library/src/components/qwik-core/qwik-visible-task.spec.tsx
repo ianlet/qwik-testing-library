@@ -6,7 +6,7 @@ describe("<QwikVisibleTask />", () => {
   it("should render value from visible task", async () => {
     await render(<QwikVisibleTask />);
 
-    expect(screen.getByText("foo-0")).toBeInTheDocument();
+    expect(await screen.findByText("foo-0")).toBeInTheDocument();
   });
 
   describe("on update", () => {
