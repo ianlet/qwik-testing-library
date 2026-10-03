@@ -45,5 +45,13 @@ export const mount: Mount = async (container, ui, { serverData }) => {
     serverData,
   });
 
-  return { unmount: cleanup };
+  return {
+    unmount: () => {
+      cleanup();
+      // Tears the container down so Qwik can render into the same element again.
+      (container as QwikContainerElement).qDestroy?.();
+    },
+  };
 };
+
+type QwikContainerElement = HTMLElement & { qDestroy?: () => void };
