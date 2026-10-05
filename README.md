@@ -96,6 +96,7 @@ src="https://raw.githubusercontent.com/ianlet/qwik-testing-library/main/high-vol
     - [Errors thrown by your components don't fail your tests](#errors-thrown-by-your-components-dont-fail-your-tests)
 - [Examples](#examples)
     - [Qwikstart](#qwikstart)
+    - [Waiting for Visible Tasks](#waiting-for-visible-tasks)
     - [Testing Hooks (experimental)](#testing-hooks-experimental)
     - [Mocking Component Callbacks (experimental)](#mocking-component-callbacks-experimental)
     - [Qwik City - `server$` calls](#qwik-city---server-calls)
@@ -155,7 +156,7 @@ npm install --save-dev jsdom
 npm install --save-dev happy-dom
 ```
 
-With Qwik v2, use `jsdom` `30.1.1` or above.
+With `jsdom`, use version `30.1.1` or above.
 
 [npm]: https://www.npmjs.com/
 
@@ -233,14 +234,8 @@ the examples. A few things behave differently than with Qwik v1.
 
 ### Visible tasks finish after `render` resolves
 
-`render` can resolve before your visible tasks have updated the DOM. Use `findBy*` queries or `waitFor` to assert on
-their changes:
-
-```tsx
-await render(<Clock />);
-
-expect(await screen.findByText("12:00")).toBeInTheDocument();
-```
+With Qwik v2, [waiting for visible tasks](#waiting-for-visible-tasks) is not just recommended, it's required: a `getBy*`
+query right after `render` doesn't see their changes yet.
 
 This is tracked upstream in [QwikDev/qwik#9121][qwik-9121].
 
@@ -337,6 +332,73 @@ describe("<Counter />", () => {
     expect(await screen.findByText(/count:2/)).toBeInTheDocument();
   });
 })
+```
+
+### Waiting for Visible Tasks
+
+A `useVisibleTask$` runs once its component is visible, after it has rendered, just like in the browser.
+Treat what it does as asynchronous: wait for it with `findBy*` queries or `waitFor` instead of asserting right after
+`render`.
+
+```tsx
+// clock.tsx
+
+export const Clock = component$(() => {
+  const time = useSignal("--:--");
+
+  useVisibleTask$(() => {
+    time.value = "12:00";
+  });
+
+  return <p>{time.value}</p>;
+});
+```
+
+```tsx
+// clock.spec.tsx
+
+await render(<Clock />);
+
+expect(await screen.findByText("12:00")).toBeInTheDocument();
+```
+
+The same goes for changes outside your component, such as a style set on `document.body`:
+
+```tsx
+await render(<ScrollLock />);
+
+await waitFor(() => expect(document.body).toHaveStyle({ overflow: "hidden" }));
+```
+
+An event listener added by a visible task can't be waited for: an event fired before it exists is lost.
+Listen to global events with `useOnDocument` or `useOnWindow` instead. They're ready as soon as `render` resolves:
+
+```tsx
+// modal.tsx
+
+export const Modal = component$(() => {
+  const open = useSignal(true);
+
+  useOnDocument(
+    "keydown",
+    $((event) => {
+      if (event.key === "Escape") open.value = false;
+    }),
+  );
+
+  return open.value && <div role="dialog">Hello</div>;
+});
+```
+
+```tsx
+// modal.spec.tsx
+
+const user = userEvent.setup();
+await render(<Modal />);
+
+await user.keyboard("{Escape}");
+
+await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 ```
 
 ### Testing Hooks (experimental)
@@ -501,14 +563,14 @@ describe("<Counter />", () => {
       // render the component into the DOM
       await render(<Counter value={0} onChange$={onChangeMock}/>);
 
-      // retrieve the 'decrement' button
-      const decrementBtn = screen.getByRole("button", {name: "Decrement"});
+      // retrieve the 'increment' button
+      const incrementBtn = screen.getByRole("button", {name: "Increment"});
       // click the button
-      await user.click(decrementBtn);
+      await user.click(incrementBtn);
 
       // assert that the onChange$ callback was called with the right value
       await waitFor(() =>
-        expect(onChangeMock).toHaveBeenCalledWith(-1),
+        expect(onChangeMock).toHaveBeenCalledWith(1),
       );
     });
   });

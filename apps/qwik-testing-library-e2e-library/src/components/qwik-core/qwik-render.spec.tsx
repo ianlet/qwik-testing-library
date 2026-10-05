@@ -1,5 +1,5 @@
 import { QwikRender } from "./qwik-render";
-import { render, screen } from "@noma.to/qwik-testing-library";
+import { cleanup, render, screen } from "@noma.to/qwik-testing-library";
 import { userEvent } from "@testing-library/user-event";
 
 describe("<QwikRender />", () => {
@@ -31,5 +31,38 @@ describe("<QwikRender />", () => {
     await render(<QwikRender items={["a", "b", "c"]} />);
 
     await expect(screen.findAllByRole("listitem")).resolves.toHaveLength(3);
+  });
+
+  describe("in a container of my own", () => {
+    let container: HTMLElement;
+
+    beforeEach(() => {
+      const parent = document.body.appendChild(document.createElement("main"));
+      container = parent.appendChild(document.createElement("section"));
+    });
+
+    afterEach(() => {
+      container.parentElement!.remove();
+    });
+
+    it("should render again after unmount", async () => {
+      const { unmount } = await render(<QwikRender myProp="first" />, {
+        container,
+      });
+      unmount();
+
+      await render(<QwikRender myProp={aProp} />, { container });
+
+      expect(screen.getByText(aProp)).toBeInTheDocument();
+    });
+
+    it("should render again after cleanup", async () => {
+      await render(<QwikRender myProp="first" />, { container });
+      cleanup();
+
+      await render(<QwikRender myProp={aProp} />, { container });
+
+      expect(screen.getByText(aProp)).toBeInTheDocument();
+    });
   });
 });
