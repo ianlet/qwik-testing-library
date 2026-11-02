@@ -139,6 +139,7 @@ npm install --save-dev @noma.to/qwik-testing-library @testing-library/dom
 
 This library supports Qwik v1 (`@builder.io/qwik` `1.12.0` and above), Qwik v2 (`@qwik.dev/core` `2.0.0-rc.0` and
 above) and `@testing-library/dom` versions `10.1.0` and above.
+It is tested with `vitest` 3 and 4, `vite` 7 (Qwik v1) and 8, on Node.js 22 and 24.
 
 You may also be interested in installing `@testing-library/jest-dom` and `@testing-library/user-event` so you can
 use [the custom jest matchers][jest-dom] and [the user event library][user-event] to test interactions with the DOM.
