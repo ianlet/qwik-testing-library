@@ -1,6 +1,7 @@
 {
   "name": "@noma.to/qwik-testing-library-root",
   "version": "0.0.0-semantically-released",
+  "packageManager": "pnpm@10.33.0",
   "description": "",
   "main": "index.js",
   "scripts": {

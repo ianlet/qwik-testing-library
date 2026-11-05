@@ -17,7 +17,7 @@ jobs:
   main:
     # ignore all-contributors PRs
     if: ${{ !contains(github.head_ref, 'all-contributors') }}
-    name: Node ${{ matrix.node }}, Qwik ${{ matrix.qwik.version }}, ${{ matrix.dom }}
+    name: Node ${{ matrix.node }}, Qwik ${{ matrix.qwik.version }}, ${{ matrix.dom }}, vitest ${{ matrix.vitest }}, vite ${{ matrix.vite }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -32,8 +32,55 @@ jobs:
           - { major: "1", version: "1.17" }
           - { major: "1", version: "1.18" }
           - { major: "1", version: "1.19" }
+          - { major: "1", version: "1.20" }
           - { major: "2", version: "2.0.0-rc.0" }
+          - { major: "2", version: "2.0.0-rc.4" }
         dom: ["jsdom", "happy-dom"]
+        vitest: ["4"]
+        vite: ["8"]
+        include:
+          # Oldest supported vitest, on the latest Qwik versions
+          - node: "24"
+            qwik: { major: "1", version: "1.20" }
+            dom: "jsdom"
+            vitest: "3"
+            vite: "8"
+          - node: "24"
+            qwik: { major: "1", version: "1.20" }
+            dom: "happy-dom"
+            vitest: "3"
+            vite: "8"
+          - node: "24"
+            qwik: { major: "2", version: "2.0.0-rc.4" }
+            dom: "jsdom"
+            vitest: "3"
+            vite: "8"
+          - node: "24"
+            qwik: { major: "2", version: "2.0.0-rc.4" }
+            dom: "happy-dom"
+            vitest: "3"
+            vite: "8"
+          # Qwik v1 declares support for vite < 8
+          - node: "24"
+            qwik: { major: "1", version: "1.12" }
+            dom: "jsdom"
+            vitest: "4"
+            vite: "7"
+          - node: "24"
+            qwik: { major: "1", version: "1.12" }
+            dom: "happy-dom"
+            vitest: "4"
+            vite: "7"
+          - node: "24"
+            qwik: { major: "1", version: "1.20" }
+            dom: "jsdom"
+            vitest: "4"
+            vite: "7"
+          - node: "24"
+            qwik: { major: "1", version: "1.20" }
+            dom: "happy-dom"
+            vitest: "4"
+            vite: "7"
 
     steps:
       - name: ⬇️ Checkout repo
@@ -44,7 +91,6 @@ jobs:
       - name: 🧱 Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 9
           run_install: false
 
       - name: ⎔ Setup node
@@ -71,6 +117,9 @@ jobs:
           pnpm --filter "{packages/qwik-mock}" install @qwik.dev/core@${{ matrix.qwik.version }}
           pnpm --filter "{apps/qwik-testing-library-e2e-library-qwik-v2}" install @qwik.dev/core@${{ matrix.qwik.version }}
 
+      - name: 📌 Pin vitest and vite
+        run: pnpm -r update vitest@${{ matrix.vitest }} @vitest/ui@${{ matrix.vitest }} vite@${{ matrix.vite }}
+
       - name: ▶️ Run tests
         run: pnpm test:qwik-v${{ matrix.qwik.major }}
         env:
@@ -87,7 +136,6 @@ jobs:
       - name: 🧱 Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 9
           run_install: false
 
       - name: ⎔ Setup node
@@ -120,7 +168,6 @@ jobs:
       - name: 🧱 Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 9
           run_install: false
 
       - name: ⎔ Setup node
@@ -166,7 +213,6 @@ jobs:
       - name: 🧱 Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 9
           run_install: false
 
       - name: ⎔ Setup node
